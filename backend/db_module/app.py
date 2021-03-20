@@ -3,36 +3,38 @@ import os
 sys.path.append(os.path.sep.join(sys.path[0].split(sep=os.path.sep)[:-2]))
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_script import Manager, Server
+from flask_script import Manager, Server, Shell
 from flask_migrate import Migrate, MigrateCommand
 from backend.db_module.entities import entities
 
 app = Flask(__name__,)
 app.url_map.strict_slashes = False
-
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://u1:1@127.0.0.1:5432/nuo_detect?client_encoding=utf8'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 with app.app_context():
     db = SQLAlchemy(app)
 
 
-def main():
-    migrate = Migrate(app, db)
-    app.config['SECRET_KEY'] = 'a really really really really long secret key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://u1:1@127.0.0.1:5432/nuo_detect?client_encoding=utf8'
-    manager = Manager(app)
-    manager.add_command('runserver', Server(host='127.0.0.1', port=5040))
-    manager.add_command('db', MigrateCommand)
+def _make_context():
+    return dict(app=app, db=db, models=entities)
 
-    @manager.command
-    def drop():
-        entities.User.query.delete()
-        entities.Doctor.query.delete()
-        entities.Patient.query.delete()
-        entities.EKG.query.delete()
 
-        db.session.commit()
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('runserver', Server(host='127.0.0.1', port=5001))
+manager.add_command('shell', Shell(make_context=_make_context))
+manager.add_command('db', MigrateCommand)
 
-    manager.run()
+
+@manager.command
+def drop():
+    entities.User.query.delete()
+    entities.Doctor.query.delete()
+    entities.Patient.query.delete()
+    entities.EKG.query.delete()
+
+    db.session.commit()
 
 
 if __name__ == '__main__':
-    main()
+    manager.run()
