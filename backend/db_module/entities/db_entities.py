@@ -1,11 +1,10 @@
 from sqlalchemy.dialects.postgresql import *
-from backend.db_module.entities.common_entity import CoreEntity
 from backend.db_module.app import db
 
 SCHEMA = 'public'
 
 
-class User(CoreEntity):
+class User:
     __table_args__ = ({"schema": SCHEMA})
     __tablename__ = "users"
 
@@ -15,7 +14,7 @@ class User(CoreEntity):
     access_level = db.Column(name='access_level', type_=INTEGER, nullable=False)
 
 
-class Patient(CoreEntity):
+class Patient:
     __table_args__ = ({"schema": SCHEMA})
     __tablename__ = "patients"
 
@@ -34,7 +33,7 @@ class Patient(CoreEntity):
     prob_log_svm = db.Column(name='prob_log_svm', type_=REAL)
 
 
-class Doctor(CoreEntity):
+class Doctor:
     __table_args__ = ({"schema": SCHEMA})
     __tablename__ = "doctors"
 
@@ -45,13 +44,13 @@ class Doctor(CoreEntity):
     telephone = db.Column(name='telephone', type_=INTEGER, nullable=False)
 
 
-class EKG(CoreEntity):
+class EKG:
     __table_args__ = ({"schema": SCHEMA})
     __tablename__ = "ekgs"
 
     id = db.Column(name='ekg_id', type_=BIGINT, unique=True, primary_key=True, nullable=False)
     patient_id = db.Column(name='patient_id', type_=BIGINT, nullable=False)
-    date = db.Column(name='date', type_=DATE, nullable=False)  # Дата/Время съема ЭКГ
+    registry_date = db.Column(name='registry_date', type_=DATE, nullable=False)  # Дата/Время съема ЭКГ
     sdnn = db.Column(name='sdnn', type_=FLOAT)  # Cтандартное отклонение NN-интервалов (SDNN)
     skewness = db.Column(name='skewness', type_=FLOAT)  # Коэффициент асимметрии NN-интервалов (Skewness)
     amo = db.Column(name='amo', type_=FLOAT)  # Амплитуда моды NN-интервалов (AMo)

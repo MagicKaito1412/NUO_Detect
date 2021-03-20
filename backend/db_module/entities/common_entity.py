@@ -1,6 +1,6 @@
 from backend.db_module.app import db
 from sqlalchemy.dialects.postgresql import *
-
+#remove if it will be not used
 DB_USER = 'u1'
 
 
