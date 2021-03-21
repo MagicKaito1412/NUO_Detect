@@ -1,5 +1,5 @@
 from backend.db_module.entities import db_entities
-from backend.db_module.app import db
+from backend.db_module import db
 
 
 class User(db_entities.User):

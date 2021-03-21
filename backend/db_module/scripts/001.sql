@@ -4,7 +4,7 @@
 
 CREATE TABLE IF NOT EXISTS public.users
 (
-    user_id      bigint                                             NOT NULL,
+    user_id      bigserial                                          NOT NULL,
     password     character varying(60) COLLATE pg_catalog."default" NOT NULL,
     login        character varying(30) COLLATE pg_catalog."default" NOT NULL,
     access_level integer                                            NOT NULL,
@@ -25,7 +25,7 @@ ALTER TABLE public.users
 
 CREATE TABLE IF NOT EXISTS public.patients
 (
-    patient_id      bigint                                             NOT NULL,
+    patient_id      bigserial                                          NOT NULL,
     user_id         bigint                                             NOT NULL,
     first_name      character varying(30) COLLATE pg_catalog."default" NOT NULL,
     last_name       character varying(50) COLLATE pg_catalog."default" NOT NULL,
@@ -59,7 +59,7 @@ ALTER TABLE public.patients
 
 CREATE TABLE IF NOT EXISTS public.doctors
 (
-    doctor_id bigint                                              NOT NULL,
+    doctor_id bigserial                                           NOT NULL,
     user_id   bigint                                              NOT NULL,
     full_name character varying(150) COLLATE pg_catalog."default" NOT NULL,
     cabinet   real,
@@ -86,9 +86,9 @@ ALTER TABLE public.doctors
 
 CREATE TABLE IF NOT EXISTS public.ekgs
 (
-    ekg_id         bigint NOT NULL,
-    patient_id     bigint NOT NULL,
-    registry_date  date   NOT NULL,
+    ekg_id         bigserial                    NOT NULL,
+    patient_id     bigint                       NOT NULL,
+    registry_date  timestamp without time zone  NOT NULL,
     sdnn           float,
     skewness       float,
     amo            float,

@@ -1,5 +1,5 @@
 from sqlalchemy.dialects.postgresql import *
-from backend.db_module.app import db
+from backend.db_module import db
 
 SCHEMA = 'public'
 
