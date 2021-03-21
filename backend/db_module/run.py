@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager, Server, Shell
 from flask_migrate import Migrate, MigrateCommand
 
-from backend.db_module import app, controller
+from backend.db_module import app
 from backend.db_module.entities import entities
 
 
