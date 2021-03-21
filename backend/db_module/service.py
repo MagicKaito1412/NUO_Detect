@@ -82,15 +82,19 @@ def export_csv(filename):
                 cur.execute(f"UPDATE patients SET has_nuo = {last_nuo} WHERE patient_id = {last_patient_id}")
                 conn.commit()
 
-        last_nuo = row[TARGET_COL]
+        nuo = row[TARGET_COL]
+        if nuo != -1 and nuo != 1:
+            nuo = 0
+        last_nuo = nuo
         last_patient_id = patient_id
+
         ekg_data = dict(zip(COLUMN_MAP.keys(), row[COLUMN_MAP.keys()]))
         ekg_data['registry_date'] = row['Дата/Время съема ЭКГ/глюкозы']
         ekg_data['patient_id'] = patient_id
         ekg_data['prob_log_reg'] = -1
         ekg_data['prob_rnd_forest'] = -1
         ekg_data['prob_log_svm'] = -1
-        ekg_data['has_nuo'] = row[TARGET_COL]
+        ekg_data['has_nuo'] = nuo
         ekg_data.pop('номер ЭКГ')
         ekg_data.pop('Дата/Время съема ЭКГ/глюкозы')
         query = (
@@ -99,4 +103,3 @@ def export_csv(filename):
         )
         cur.execute(query, tuple(ekg_data.values()))
     conn.commit()
-    return '', 200

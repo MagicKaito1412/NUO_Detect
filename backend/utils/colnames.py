@@ -12,8 +12,7 @@ ECG = 'номер ЭКГ'
 DATE = 'Дата/Время съема ЭКГ/глюкозы'
 
 NOISY_COLS = ['qt', 'st', 'P', 'pq', 'qrs', 'p_left_slopes', 'p_right_slopes',
-              'q_left_slopes', 'q_right_slopes', 'r_left_slopes', 'r_right_slopes',
-              's_left_slopes', 's_right_slopes', 't_left_slopes', 't_right_slopes']
+              'q_left_slopes', 'q_right_slopes', 't_left_slopes', 't_right_slopes']
 USELESS_COLS = [ID, 'номер ЭКГ', 'Дата рождения', 'Дата/Время съема ЭКГ/глюкозы', 'комментарий']
 DISRESPECT_COLS = ['Натощак']
 TARGET_COL = 'Площадка исследования ("1" - с диабетом 2 типа, "0","2","3","4" - без диабета)'
@@ -64,7 +63,8 @@ COLUMN_MAP = {
     'pulse': 'ЧСС (число ударов в секунду)'
 }
 
-
+DB_EKG_USELESS_COLS = ['ekg_id', 'patient_id', 'registry_date', 'prob_log_reg', 'prob_log_svm', 'prob_rnd_forest']
+DB_TARGET_COL = 'has_nuo'
 EKG_COLUMNS = [
     'ekg_id',
     'patient_id',
@@ -109,6 +109,7 @@ EKG_COLUMNS = [
     'pq',
     'qrs',
     'pulse',
+    'has_nuo',
     'prob_log_reg',
     'prob_rnd_forest',
     'prob_log_svm'
