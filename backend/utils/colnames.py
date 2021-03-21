@@ -70,6 +70,7 @@ DB_PROB_SVM = 'prob_rnd_forest'
 DB_PATIENT_ID = 'patient_id'
 DB_EKG_USELESS_COLS = ['ekg_id', 'patient_id', 'registry_date', 'prob_log_reg', 'prob_log_svm', 'prob_rnd_forest']
 DB_TARGET_COL = 'has_nuo'
+DB_REGISTRY_DATE = 'registry_date'
 EKG_COLUMNS = [
     'ekg_id',
     'patient_id',

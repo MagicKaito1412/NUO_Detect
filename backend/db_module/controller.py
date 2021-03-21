@@ -34,22 +34,11 @@ def add_patient():
     pass
 
 
-@app.route('/insert_update_ekg', methods=['POST'])
-def insert_ekg():
-    data = dict(
-        first_name=request.form.get('first_name'),
-        last_name=request.form.get('last_name'),
-        middle_name=request.form.get('middle_name'),
-        gender=request.form.get('gender'),
-        age=request.form.get('age'),
-        weight=request.form.get('weight'),
-        height=request.form.get('height'),
-        has_nuo=request.form.get('has_nuo'),
-        policy_num=request.form.get('policy_num'),
-        prob_log_reg="-1",
-        prob_rnd_forest="-1",
-        prob_log_svm="-1"
-    )
+@app.route('/update_ekg', methods=['POST'])
+def update_ekg():
+    data = request.get_json()
+    service.update_ekg(data)
+    return 'OK', 200
 
 
 @app.route('/info', methods=['GET'])

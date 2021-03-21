@@ -4,13 +4,20 @@ import random
 import sys
 import psycopg2
 from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 from backend.db_module import app
 from backend.utils.colnames import (
     ID, FIO, TYPE, AGE, WEIGHT, HEIGHT, PROB_LOG_REG, PROB_RND_FOREST, PROB_SVM,
-    ECG, DATE, NOISY_COLS, USELESS_COLS, DISRESPECT_COLS, TARGET_COL,
-    COLUMN_MAP
+    ECG, DATE, NOISY_COLS, USELESS_COLS, DISRESPECT_COLS, TARGET_COL, DB_REGISTRY_DATE,
+    COLUMN_MAP, DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM
 )
+
+conn = psycopg2.connect(dbname='nuo_detect',
+                        user='u1',
+                        password='1',
+                        host='127.0.0.1')
+cur = conn.cursor()
 
 
 def export_csv(filename):
@@ -26,13 +33,7 @@ def export_csv(filename):
     data[PROB_LOG_REG] = -1
     data[PROB_RND_FOREST] = -1
     data[PROB_SVM] = -1
-    data[TARGET_COL] = (data[TARGET_COL] == 1).astype(int)
-
-    conn = psycopg2.connect(dbname='nuo_detect',
-                            user='u1',
-                            password='1',
-                            host='127.0.0.1')
-    cur = conn.cursor()
+    data[TARGET_COL] = data[TARGET_COL].astype(int)
 
     added_patients = set()
     last_nuo = -1
@@ -102,4 +103,15 @@ def export_csv(filename):
              f"VALUES ({','.join(['%s'] * len(ekg_data))})")
         )
         cur.execute(query, tuple(ekg_data.values()))
+        conn.commit()
+
+
+def update_ekg(data):
+    DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM
+    cur.execute(f"UPDATE ekgs SET "
+                f"{DB_PROB_LOG_REG}=%s, "
+                f"{DB_PROB_RND_FOREST}=%s, "
+                f"{DB_PROB_SVM}=%s "
+                f"WHERE ekg_id = %s",
+                (data[DB_PROB_LOG_REG], data[DB_PROB_RND_FOREST], data[DB_PROB_SVM], data['ekg_id']))
     conn.commit()

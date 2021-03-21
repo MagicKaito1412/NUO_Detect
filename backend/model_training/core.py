@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import psycopg2
+import pickle as pkl
 from sklearn.metrics import f1_score, recall_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
@@ -11,6 +12,9 @@ from backend.utils.colnames import (
     DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM,
     NOISY_COLS, DB_TARGET_COL, EKG_COLUMNS,
     DB_EKG_USELESS_COLS, DB_PATIENT_ID
+)
+from backend.model_training import (
+    scaler, model_logreg, model_forest, model_svm, app
 )
 
 def get_train_ekg():
@@ -175,3 +179,13 @@ def get_sens_spec(data, save_predicts=False):
     if save_predicts:
         return models_metrics, data
     return models_metrics
+
+def save_models():
+    with open(f"{app.config['MODELS_PATH']}/svm.pkl", 'wb') as f:
+        pkl.dump(model_svm, f)
+    with open(f"{app.config['MODELS_PATH']}/forest.pkl", 'wb') as f:
+        pkl.dump(model_forest, f)
+    with open(f"{app.config['MODELS_PATH']}/logreg.pkl", 'wb') as f:
+        pkl.dump(model_logreg, f)
+    with open(f"{app.config['MODELS_PATH']}/scaler.pkl", 'wb') as f:
+        pkl.dump(scaler, f)

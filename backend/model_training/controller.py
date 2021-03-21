@@ -3,7 +3,7 @@ from flask import request, jsonify
 import requests
 
 
-@app.route('/train', methods=['GET'])
+@app.route('/train', methods=['POST'])
 def train():
     service.train()
     return 'OK', 200
