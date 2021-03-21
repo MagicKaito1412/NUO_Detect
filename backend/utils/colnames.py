@@ -63,6 +63,11 @@ COLUMN_MAP = {
     'pulse': 'ЧСС (число ударов в секунду)'
 }
 
+
+DB_PROB_LOG_REG = 'prob_log_reg'
+DB_PROB_RND_FOREST = 'prob_log_svm'
+DB_PROB_SVM = 'prob_rnd_forest'
+DB_PATIENT_ID = 'patient_id'
 DB_EKG_USELESS_COLS = ['ekg_id', 'patient_id', 'registry_date', 'prob_log_reg', 'prob_log_svm', 'prob_rnd_forest']
 DB_TARGET_COL = 'has_nuo'
 EKG_COLUMNS = [

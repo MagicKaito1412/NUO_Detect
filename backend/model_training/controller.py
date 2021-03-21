@@ -5,8 +5,11 @@ import requests
 
 @app.route('/train', methods=['GET'])
 def train():
-    response = requests.request(method='GET',
-                                url='http://127.0.0.1:5001/info')
-    print(response)
     service.train()
     return 'OK', 200
+
+
+@app.route('/calc_sens_spec', methods=['GET'])
+def calc_sens_spec():
+    result = service.calc_sens_spec()
+    return jsonify(result), 200
