@@ -1,6 +1,8 @@
-from flask import Flask
-app = Flask(__name__,)
-app.url_map.strict_slashes = False
+import sys
+import os
+sys.path.append(os.path.sep.join(sys.path[0].split(sep=os.path.sep)[:-2]))
+
+from backend.form_report import app
 
 if __name__ == '__main__':
-    app.run('127.0.0.1', '5050')
+    app.run(host='127.0.0.1', port='5020')

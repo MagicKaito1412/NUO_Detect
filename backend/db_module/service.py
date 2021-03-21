@@ -41,7 +41,7 @@ def export_csv(filename):
     for i, row in data.iterrows():
         if row[ID] not in added_patients:
             added_patients.add(row[ID])
-            cur.execute("select nextval(pg_get_serial_sequence('users', 'user_id'))")
+            cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
             user_id = cur.fetchone()[0]
 
             user_data = dict(
@@ -55,7 +55,7 @@ def export_csv(filename):
                         )
             conn.commit()
 
-            cur.execute("select nextval(pg_get_serial_sequence('patients', 'patient_id'))")
+            cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
             patient_id = cur.fetchone()[0]
             patient_data = {
                 'user_id': user_id,

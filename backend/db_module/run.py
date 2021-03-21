@@ -18,7 +18,7 @@ def _make_context():
     return dict(app=app, db=db, models=entities)
 migrate = Migrate(app, db)
 manager = Manager(app)
-manager.add_command('runserver', Server(host='127.0.0.1', port=5001))
+manager.add_command('runserver', Server(host='127.0.0.1', port=5000))
 manager.add_command('shell', Shell(make_context=_make_context))
 manager.add_command('db', MigrateCommand)
 
