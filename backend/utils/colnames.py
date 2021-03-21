@@ -11,13 +11,12 @@ PROB_SVM = 'Вероятность модели (svm)'
 ECG = 'номер ЭКГ'
 DATE = 'Дата/Время съема ЭКГ/глюкозы'
 
-BAD_COLS = ['Уровень глюкозы, ммоль/л']
 NOISY_COLS = ['qt', 'st', 'P', 'pq', 'qrs', 'p_left_slopes', 'p_right_slopes',
               'q_left_slopes', 'q_right_slopes', 'r_left_slopes', 'r_right_slopes',
               's_left_slopes', 's_right_slopes', 't_left_slopes', 't_right_slopes']
 USELESS_COLS = [ID, 'номер ЭКГ', 'Дата рождения', 'Дата/Время съема ЭКГ/глюкозы', 'комментарий']
 DISRESPECT_COLS = ['Натощак']
-TARGET_COL = ['Площадка исследования ("1" - с диабетом 2 типа, "0","2","3","4" - без диабета)']
+TARGET_COL = 'Площадка исследования ("1" - с диабетом 2 типа, "0","2","3","4" - без диабета)'
 
 COLUMN_MAP = {
     'номер ЭКГ': 'Номер ЭКГ',
@@ -29,8 +28,8 @@ COLUMN_MAP = {
     'Mo': 'Мода NN –интервалов по кардиоинтевалограмме с шагом 100мс (Mo)',
     'dRR': 'Вариационный размах RR-интервалов (dRR)',
     'RRNN': 'Средняя длительность NN-интервалов (RRNN)',
-    'pNN50': ('Доля пар последовательных NN-интервалов, различающихся более, чем на 50 мс '
-              'среди всех NN-интервалов (pNN50)'),
+    'pNN50': ('Доля пар последовательных NN-интервалов, различающихся более, '
+              'чем на 50 мс среди всех NN-интервалов (pNN50)'),
     'SI': 'Индекс напряжения (SI)',
     'SATI': 'Индекс симпато-адреналового тонуса (SATI)',
     'RMI': 'Индекс дыхательной модуляции (RMI)',
@@ -64,3 +63,53 @@ COLUMN_MAP = {
     'qrs': 'Ширина QRS-комплекса',
     'pulse': 'ЧСС (число ударов в секунду)'
 }
+
+
+EKG_COLUMNS = [
+    'ekg_id',
+    'patient_id',
+    'registry_date',
+    'sdnn',
+    'skewness',
+    'Amo',
+    'SWAI',
+    'Mo',
+    'dRR',
+    'RRNN',
+    'pNN50',
+    'SI',
+    'SATI',
+    'RMI',
+    'kurtosis',
+    'CV',
+    'RMSSD',
+    'NN50',
+    'lf',
+    'lfhf',
+    'hfp',
+    'ulf',
+    'tp',
+    'vlf',
+    'vlfp',
+    'lfp',
+    'br',
+    'ulfp',
+    'ic',
+    'hf',
+    'tpfull',
+    'p_left_slopes',
+    'p_right_slopes',
+    'q_left_slopes',
+    'q_right_slopes',
+    't_left_slopes',
+    't_right_slopes',
+    'qt',
+    'st',
+    'P',
+    'pq',
+    'qrs',
+    'pulse',
+    'prob_log_reg',
+    'prob_rnd_forest',
+    'prob_log_svm'
+]
