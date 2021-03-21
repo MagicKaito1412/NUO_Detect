@@ -28,7 +28,7 @@ class Patient:
     age = db.Column(name='age', type_=INTEGER, nullable=False)
     weight = db.Column(name='weight', type_=INTEGER, nullable=False)
     height = db.Column(name='height', type_=INTEGER, nullable=False)
-    has_nuo = db.Column(name='has_nuo', type_=BOOLEAN)
+    has_nuo = db.Column(name='has_nuo', type_=INTEGER)
     prob_log_reg = db.Column(name='prob_log_reg', type_=REAL)
     prob_rnd_forest = db.Column(name='prob_rnd_forest', type_=REAL)
     prob_log_svm = db.Column(name='prob_log_svm', type_=REAL)
