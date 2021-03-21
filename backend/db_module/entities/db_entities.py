@@ -20,6 +20,7 @@ class Patient:
 
     id = db.Column(name='patient_id', type_=BIGINT, unique=True, primary_key=True, nullable=False)
     user_id = db.Column(name='user_id', type_=BIGINT, unique=True, nullable=False)
+    policy_num = db.Column(name='policy_num', type_=VARCHAR(16), nullable=False)
     first_name = db.Column(name='first_name', type_=VARCHAR(30), nullable=False)
     last_name = db.Column(name='last_name', type_=VARCHAR(50), nullable=False)
     middle_name = db.Column(name='middle_name', type_=VARCHAR(50))

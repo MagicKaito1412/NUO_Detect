@@ -27,6 +27,7 @@ class Patient(db_entities.Patient):
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "policy_num": self.policy_num,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "middle_name": self.middle_name,

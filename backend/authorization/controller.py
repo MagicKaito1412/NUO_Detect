@@ -1,5 +1,5 @@
 from . import service
-from app import app
+from run import app
 from flask import request
 
 

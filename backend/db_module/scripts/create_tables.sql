@@ -1,7 +1,5 @@
 -- Table: public.users
 
--- DROP TABLE public.users;
-
 CREATE TABLE IF NOT EXISTS public.users
 (
     user_id      bigserial                                          NOT NULL,
@@ -21,8 +19,6 @@ ALTER TABLE public.users
 
 -- Table: public.patients
 
--- DROP TABLE public.patients;
-
 CREATE TABLE IF NOT EXISTS public.patients
 (
     patient_id      bigserial                                          NOT NULL,
@@ -34,12 +30,14 @@ CREATE TABLE IF NOT EXISTS public.patients
     age             integer                                            NOT NULL,
     weight          integer                                            NOT NULL,
     height          integer                                            NOT NULL,
+    policy_num      character varying(16) COLLATE pg_catalog."default" NOT NULL,
     has_nuo         boolean,
     prob_log_reg    real,
     prob_rnd_forest real,
     prob_log_svm    real,
     CONSTRAINT patients_pkey PRIMARY KEY (patient_id),
     CONSTRAINT patients_user_id_key UNIQUE (user_id),
+    CONSTRAINT patients_policy_num_key UNIQUE (policy_num),
     CONSTRAINT patients_user_id_fkey FOREIGN KEY (user_id)
         REFERENCES public.users (user_id) MATCH SIMPLE
         ON UPDATE CASCADE
@@ -54,8 +52,6 @@ ALTER TABLE public.patients
     OWNER to u1;
 
 -- Table: public.doctors
-
--- DROP TABLE public.doctors;
 
 CREATE TABLE IF NOT EXISTS public.doctors
 (
@@ -82,13 +78,11 @@ ALTER TABLE public.doctors
 
 -- Table: public.ekgs
 
--- DROP TABLE public.ekgs;
-
 CREATE TABLE IF NOT EXISTS public.ekgs
 (
-    ekg_id         bigserial                    NOT NULL,
-    patient_id     bigint                       NOT NULL,
-    registry_date  timestamp without time zone  NOT NULL,
+    ekg_id         bigserial                   NOT NULL,
+    patient_id     bigint                      NOT NULL,
+    registry_date  timestamp without time zone NOT NULL,
     sdnn           float,
     skewness       float,
     amo            float,

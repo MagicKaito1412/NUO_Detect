@@ -1,5 +1,5 @@
 from . import service
-from app import app
+from run import app
 
 
 @app.route('/predict/<int:patient_id>', methods=['POST'])
