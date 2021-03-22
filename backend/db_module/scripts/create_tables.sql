@@ -55,11 +55,13 @@ ALTER TABLE public.patients
 
 CREATE TABLE IF NOT EXISTS public.doctors
 (
-    doctor_id bigserial                                           NOT NULL,
-    user_id   bigint                                              NOT NULL,
-    full_name character varying(150) COLLATE pg_catalog."default" NOT NULL,
-    cabinet   real,
-    telephone integer                                             NOT NULL,
+    doctor_id   bigserial                                          NOT NULL,
+    user_id     bigint                                             NOT NULL,
+    first_name  character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    last_name   character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    middle_name character varying(50) COLLATE pg_catalog."default",
+    cabinet     real,
+    telephone   integer                                            NOT NULL,
     CONSTRAINT doctors_pkey PRIMARY KEY (doctor_id),
     CONSTRAINT doctors_user_id_key UNIQUE (user_id),
     CONSTRAINT doctors_user_id_fkey FOREIGN KEY (user_id)

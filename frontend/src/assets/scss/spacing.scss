@@ -59,3 +59,31 @@
     padding: calc(4px * #{$i}) 0;
   }
 }
+
+//flex
+
+.flr {
+  display: flex;
+  flex-direction: row;
+}
+
+.flс {
+  display: flex;
+  flex-direction: column;
+}
+
+.justify-c {
+  justify-content: center;
+}
+
+.justify-sb {
+  justify-content: space-between;
+}
+
+.justify-end {
+  justify-content: end;
+}
+
+.align-c {
+  align-items: center;
+}

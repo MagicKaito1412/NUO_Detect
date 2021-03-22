@@ -9,6 +9,9 @@
             <cardio-logo-generator :number="login ? 3 : 5"/>
             <div v-if="!login">
                 <template v-if="access_level === 2">
+                    <el-button class="mr-5 cp" v-if="$route.name !== 'patients'">
+                        <i class="material-icons icons-style" @click="goTo('patients')">people</i>
+                    </el-button>
                     <el-button class="mr-5 cp">
                         <i class="material-icons icons-style" @click="train">assessment</i>
                     </el-button>
@@ -16,6 +19,9 @@
                         <i class="material-icons icons-style" @click="doctorCard">account_box</i>
                     </el-button>
                 </template>
+                <el-button class="mr-5 cp" v-if="access_level === 3 && $route.name !== 'patient'">
+                    <i class="material-icons icons-style" @click="goTo('patient')">portrait</i>
+                </el-button>
                 <el-button class="mr-5 cp">
                     <i class="material-icons icons-style" @click="logout">input</i>
                 </el-button>

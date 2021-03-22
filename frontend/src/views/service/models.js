@@ -25,7 +25,9 @@ export class Patient {
 export class Doctor {
     id
     user_id
-    full_name
+    first_name
+    last_name
+    middle_name
     cabinet
     telephone
 }

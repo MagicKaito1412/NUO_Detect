@@ -43,8 +43,8 @@ export default {
     },
     methods: {
         close() {
-            this.$emit('update:visible', false)
             this.$emit('close')
+            this.$emit('update:visible', false)
         },
     },
 
@@ -85,10 +85,11 @@ export default {
 
 .pn-form-heading__inner {
     position: relative;
+
     .close-icon {
         position: absolute;
         right: 0;
-        padding-right: 10px;
+        padding-right: 15px;
         cursor: pointer;
         color: $--color-primary;
     }

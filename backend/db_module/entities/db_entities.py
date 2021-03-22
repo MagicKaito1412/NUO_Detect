@@ -40,7 +40,9 @@ class Doctor:
 
     id = db.Column(name='doctor_id', type_=BIGINT, unique=True, primary_key=True, nullable=False)
     user_id = db.Column(name='user_id', type_=BIGINT, unique=True, nullable=False)
-    full_name = db.Column(name='full_name', type_=VARCHAR(150), nullable=False)
+    first_name = db.Column(name='first_name', type_=VARCHAR(30), nullable=False)
+    last_name = db.Column(name='last_name', type_=VARCHAR(50), nullable=False)
+    middle_name = db.Column(name='middle_name', type_=VARCHAR(50))
     cabinet = db.Column(name='cabinet', type_=REAL)
     telephone = db.Column(name='telephone', type_=INTEGER, nullable=False)
 

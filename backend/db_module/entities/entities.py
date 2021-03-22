@@ -54,7 +54,9 @@ class Doctor(db_entities.Doctor):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "full_name": self.full_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "middle_name": self.middle_name,
             "cabinet": self.cabinet,
             "telephone": self.telephone,
         }

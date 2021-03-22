@@ -1,5 +1,5 @@
 <template>
-    <n-table/>
+    <el-table/>
 </template>
 
 <script>
