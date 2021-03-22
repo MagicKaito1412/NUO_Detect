@@ -10,7 +10,7 @@ from backend.db_module import app
 from backend.utils.colnames import (
     ID, FIO, TYPE, AGE, WEIGHT, HEIGHT, PROB_LOG_REG, PROB_RND_FOREST, PROB_SVM,
     ECG, DATE, NOISY_COLS, USELESS_COLS, DISRESPECT_COLS, TARGET_COL, DB_REGISTRY_DATE,
-    COLUMN_MAP, DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM
+    COLUMN_MAP, DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM, EKG_COLUMNS
 )
 
 conn = psycopg2.connect(dbname='nuo_detect',
@@ -46,19 +46,21 @@ def export_csv(filename):
             user_id = cur.fetchone()[0]
 
             user_data = dict(
+                user_id=user_id,
                 login=f'user{user_id}',
                 password=f'user{user_id}',
                 access_level=0
             )
-            cur.execute(f"INSERT INTO users(user_id, {', '.join(user_data.keys())}) "
-                        f"VALUES ({','.join(['%s'] * (len(user_data)+1))})",
-                        ((user_id, ) + tuple(user_data.values()))
+            cur.execute(f"INSERT INTO users({', '.join(user_data.keys())}) "
+                        f"VALUES ({','.join(['%s'] * len(user_data))})",
+                        (tuple(user_data.values()))
                         )
             conn.commit()
 
             cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
             patient_id = cur.fetchone()[0]
             patient_data = {
+                'patient_id': patient_id,
                 'user_id': user_id,
                 'policy_num': ''.join([str(random.randint(0, 9)) for _ in range(16)]),
                 'first_name': f'user{len(added_patients)}',
@@ -73,9 +75,9 @@ def export_csv(filename):
                 'prob_rnd_forest': -1,
                 'prob_log_svm': -1
             }
-            cur.execute(f"INSERT INTO patients(patient_id, {', '.join(patient_data.keys())}) "
-                        f"VALUES ({','.join(['%s'] * (len(patient_data)+1))})",
-                        ((patient_id, ) + tuple(patient_data.values()))
+            cur.execute(f"INSERT INTO patients({', '.join(patient_data.keys())}) "
+                        f"VALUES ({','.join(['%s'] * len(patient_data))})",
+                        (tuple(patient_data.values()))
                         )
             conn.commit()
 
@@ -107,11 +109,84 @@ def export_csv(filename):
 
 
 def update_ekg(data):
-    DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM
-    cur.execute(f"UPDATE ekgs SET "
-                f"{DB_PROB_LOG_REG}=%s, "
-                f"{DB_PROB_RND_FOREST}=%s, "
-                f"{DB_PROB_SVM}=%s "
-                f"WHERE ekg_id = %s",
-                (data[DB_PROB_LOG_REG], data[DB_PROB_RND_FOREST], data[DB_PROB_SVM], data['ekg_id']))
+    ekg_id = data.pop('ekg_id')
+    subquery = ', '.join([f'{k}=%s' for k in data.keys()])
+    cur.execute(
+        f"UPDATE ekgs SET {subquery} WHERE ekg_id=%s",
+        (tuple(data.values()) + (ekg_id,))
+    )
     conn.commit()
+
+
+# NEED TEST
+def inset_ekg(data):
+    cur.execute(
+        f"INSERT INTO ekgs({', '.join(data.keys())})"
+        f"VALUES ({','.join(['%s'] * len(data))})",
+        (tuple(data.values()))
+    )
+    conn.commit()
+
+
+# NEED TEST
+def update_patient(patient_data):
+    patient_id = patient_data.pop('patient_id')
+    subquery = ', '.join([f'{k}=%s' for k in patient_data.keys()])
+    cur.execute(
+        f"UPDATE ekgs SET {subquery} WHERE patient_id=%s",
+        (tuple(patient_data.values()) + (patient_id,))
+    )
+    conn.commit()
+
+
+# NEED TEST
+def insert_patient(patient_data):
+    cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
+    user_id = cur.fetchone()[0]
+
+    user_data = dict(
+        user_id=user_id,
+        login=f'user{user_id}',
+        password=f'user{user_id}',
+        access_level=0
+    )
+    cur.execute(
+        f"INSERT INTO users({', '.join(user_data.keys())}) "
+        f"VALUES ({','.join(['%s'] * len(user_data))})",
+        (tuple(user_data.values()))
+    )
+
+    cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
+    patient_id = cur.fetchone()[0]
+
+    patient_data[patient_id] = patient_id
+    cur.execute(
+        f"INSERT INTO patients({', '.join(patient_data.keys())}) "
+        f"VALUES ({','.join(['%s'] * len(patient_data))})",
+        (tuple(patient_data.values()))
+    )
+    conn.commit()
+
+
+# NEED TEST (WHY SO MANY USELESS INFO FOR DOCTOR?)
+def get_patient_ekg(policy_num):
+    exec_cols = (
+        'patients.first_name',
+        'patients.last_name',
+        'patients.gender',
+        'patients.age',
+        'patients.weight',
+        'patients.height',
+        'patients.policy_num',
+    ) + \
+        tuple(map(lambda x: 'ekgs.' + x, EKG_COLUMNS))
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(exec_cols)} "
+        "FROM ekgs LEFT JOIN patients ON ekgs.patient_id = patients.patient_id "
+        f"WHERE patients.policy_num = '{policy_num}'"
+        ") data"
+    )
+    data = cur.fetchall()
+    return data
