@@ -9,11 +9,28 @@ const vuexSessionStorage = new VuexPersist({
     storage: window.sessionStorage,
 });
 
-const state = {};
+const state = {
+    authUser: {},
+    authPerson: {},
+};
 
-const getters = {};
+const getters = {
+    getAuthUser: state => state.authUser,
+    getAuthPerson: state => state.authPerson,
+};
 
-const mutations = {};
+const mutations = {
+    SET_AUTH_USER(state, value) {
+        state.authUser = value
+    },
+    SET_AUTH_PERSON(state, value) {
+        state.authPerson = value
+    },
+    LOGOUT(state) {
+        state.authUser = {}
+        state.authPerson = {}
+    }
+};
 
 const actions = {};
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-wrapper>
+        <main-wrapper :login="true">
             <div class="wrapper-window">
                 <div class="login-window">
                     <div class="flr justify-c">
@@ -17,8 +17,8 @@
                             <el-input v-model="user.password" show-password/>
                         </div>
                         <div class="primary-button flr justify-c mt-3">
-                        <el-button class="width-11">Войти</el-button>
-                    </div>
+                            <el-button style="width: 90%; margin: 0; padding: 5px 0;" @click="loginClick">Войти</el-button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -32,10 +32,19 @@ import {User} from "../models";
 export default {
     name: "home",
     data() {
-    return {
-      user: new User()
+        return {
+            user: new User()
+        }
+    },
+    methods: {
+        loginClick() {
+            //todo add back
+            this.$set(this.user, 'id', 1)
+            this.$set(this.user, 'access_level', Number(this.user.login))
+            this.$store.commit('SET_AUTH_USER', this.user)
+            this.goTo('home')
+        }
     }
-  }
 }
 </script>
 
