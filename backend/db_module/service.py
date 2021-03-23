@@ -206,5 +206,22 @@ def get_patients():
     data = []
     for d in cur:
         data.append(d[0])
-    print(data[0])
     return data
+
+
+# def get_patients():
+#     cols = (
+#         'patient_id', 'first_name', 'last_name', 'gender', 'age', 'policy_num',
+#     )
+#     cur.execute(
+#         "SELECT row_to_json(data) FROM "
+#         "("
+#         f"SELECT {','.join(cols)} "
+#         "FROM patients"
+#         ") data"
+#     )
+#     data = []
+#     for d in cur:
+#         data.append(d[0])
+#     print(data[0])
+#     return data
