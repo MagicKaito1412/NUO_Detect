@@ -170,7 +170,7 @@ def insert_patient(conn, cur, patient_data):
 
 
 @db_transaction
-def get_patients(conn, cur):
+def get_all_patients(conn, cur):
     cols = (
         'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
     )
@@ -179,6 +179,27 @@ def get_patients(conn, cur):
         "("
         f"SELECT {','.join(cols)} "
         "FROM patients"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
+
+
+@db_transaction
+def get_patients(conn, cur, filters):
+    cols = (
+        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
+    )
+
+    subquery_in = [f"POSITION('{value}' IN patients.{col}) = 1" for col, value in filters.items()]
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(cols)} "
+        "FROM patients "
+        f"WHERE {' AND '.join(subquery_in)}"
         ") data"
     )
     data = []

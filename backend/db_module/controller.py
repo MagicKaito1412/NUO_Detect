@@ -55,9 +55,16 @@ def insert_ekg():
     return 'check registry_date', 400
 
 
+@app.route('/get_all_patients', methods=['GET'])
+def get_all_patients():
+    result = service.get_all_patients()
+    return jsonify(result)
+
+
 @app.route('/get_patients', methods=['GET'])
 def get_patients():
-    result = service.get_patients()
+    filters = request.get_json()
+    result = service.get_patients(filters)
     return jsonify(result)
 
 
