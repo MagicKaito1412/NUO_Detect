@@ -14,16 +14,12 @@ from backend.model_training.core import get_X_y
 from backend.nuo_prediction import (
     scaler, model_forest, model_logreg, model_svm
 )
+from backend.utils.connect import db_transaction
 
 
-def get_predict_patient_ekg(patient_id):
+@db_transaction
+def get_predict_patient_ekg(conn, cur, patient_id):
     df_cols = ('gender', 'age', 'weight', 'height') + tuple(EKG_COLUMNS)
-
-    conn = psycopg2.connect(dbname='nuo_detect',
-                            user='u1',
-                            password='1',
-                            host='127.0.0.1')
-    cur = conn.cursor()
 
     exec_cols = ('patients.gender', 'patients.age', 'patients.weight', 'patients.height') + \
         tuple(map(lambda x: 'ekgs.' + x, EKG_COLUMNS))
