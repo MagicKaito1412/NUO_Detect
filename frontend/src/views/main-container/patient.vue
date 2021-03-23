@@ -1,7 +1,6 @@
 <template>
     <div class="flc">
         <h3>{{ title }}</h3>
-        {{creationMode ? "AAA" : 'BB'}}
         <div class="patient">
             <div class="flr">
                 <div class="flc">
