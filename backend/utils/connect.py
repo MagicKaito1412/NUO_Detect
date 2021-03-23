@@ -17,8 +17,7 @@ def db_transaction(func):
         try:
             result = func(conn, cur, *args, **kwargs)
         except psycopg2.DatabaseError as result:
-            pass
-        finally:
+            print(result)
             if conn is not None:
                 conn.close()
             conn = psycopg2.connect(dbname='nuo_detect',

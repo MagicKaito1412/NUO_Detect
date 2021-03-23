@@ -51,7 +51,6 @@ def export_csv(conn, cur, filename):
                         f"VALUES ({','.join(['%s'] * len(user_data))})",
                         (tuple(user_data.values()))
                         )
-            conn.commit()
 
             cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
             patient_id = cur.fetchone()[0]
@@ -115,9 +114,11 @@ def update_ekg(conn, cur, data):
     conn.commit()
 
 
-# NEED TEST
 @db_transaction
-def inset_ekg(conn, cur, data):
+def insert_ekg(conn, cur, data):
+    cur.execute("SELECT nextval(pg_get_serial_sequence('ekgs', 'ekg_id'))")
+    ekg_id = cur.fetchone()[0]
+    data['ekg_id'] = ekg_id
     cur.execute(
         f"INSERT INTO ekgs({', '.join(data.keys())})"
         f"VALUES ({','.join(['%s'] * len(data))})",
@@ -132,13 +133,12 @@ def update_patient(conn, cur, patient_data):
     patient_id = patient_data.pop('patient_id')
     subquery = ', '.join([f'{k}=%s' for k in patient_data.keys()])
     cur.execute(
-        f"UPDATE ekgs SET {subquery} WHERE patient_id=%s",
+        f"UPDATE patients SET {subquery} WHERE patient_id=%s",
         (tuple(patient_data.values()) + (patient_id,))
     )
     conn.commit()
 
 
-# NEED TEST
 @db_transaction
 def insert_patient(conn, cur, patient_data):
     cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
@@ -159,7 +159,8 @@ def insert_patient(conn, cur, patient_data):
     cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
     patient_id = cur.fetchone()[0]
 
-    patient_data[patient_id] = patient_id
+    patient_data['patient_id'] = patient_id
+    patient_data['user_id'] = user_id
     cur.execute(
         f"INSERT INTO patients({', '.join(patient_data.keys())}) "
         f"VALUES ({','.join(['%s'] * len(patient_data))})",
@@ -217,3 +218,17 @@ def get_ekg(conn, cur, ekg_id):
     )
     data = cur.fetchone()[0]
     return data
+
+
+@db_transaction
+def delete_patient(conn, cur, patient_id):
+    cur.execute(f"SELECT user_id FROM patients WHERE patient_id = {patient_id}")
+    user_id = cur.fetchone()[0]
+    cur.execute(f"DELETE FROM users WHERE user_id = {user_id}")
+    conn.commit()
+
+
+@db_transaction
+def delete_ekg(conn, cur, ekg_id):
+    cur.execute(f"DELETE FROM ekgs WHERE ekg_id = {ekg_id}")
+    conn.commit()
