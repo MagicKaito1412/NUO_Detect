@@ -2,6 +2,11 @@ from backend.db_module import app, service
 from flask import request, jsonify
 
 
+@app.route('/info', methods=['GET'])
+def info():
+    return 'OK', 200
+
+
 @app.route('/export_csv', methods=['POST'])
 def export_csv():
     filename = request.form.get('filename')
@@ -50,13 +55,15 @@ def inset_ekg():
     return 'check ekg_id, patient_id, registry_date', 400
 
 
-@app.route('/info', methods=['GET'])
-def info():
-    return 'OK', 200
-
-
 @app.route('/get_patient_ekg/<string:policy_num>', methods=['GET'])
 def get_patient_ekg(policy_num):
     # return 'OK', 200?
     result = service.get_patient_ekg(policy_num)
+    return jsonify(result)
+
+
+@app.route('/get_patients', methods=['GET'])
+def get_patients():
+    # return 'OK', 200?
+    result = service.get_patients()
     return jsonify(result)
