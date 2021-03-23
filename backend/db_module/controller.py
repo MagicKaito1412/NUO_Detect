@@ -44,26 +44,49 @@ def update_ekg():
     return 'check ekg_id', 400
 
 
-ekg_not_null_cols = set(['first_name', 'last_name', 'gender', 'age', 'weight', 'height', 'policy_num'])
-@app.route('/inset_ekg', methods=['POST'])
-def inset_ekg():
+ekg_not_null_cols = set(['registry_date'])
+@app.route('/insert_ekg', methods=['POST'])
+def insert_ekg():
     data = request.get_json()
     diff = ekg_not_null_cols - (ekg_not_null_cols & data.keys())
     if not diff:
-        service.inset_ekg(data)
+        service.insert_ekg(data)
         return 'OK', 200
-    return 'check ekg_id, patient_id, registry_date', 400
+    return 'check registry_date', 400
 
 
-@app.route('/get_patient_ekgs/<string:policy_num>', methods=['GET'])
-def get_patient_ekgs(policy_num):
-    # return 'OK', 200?
-    result = service.get_patient_ekgs(policy_num)
+@app.route('/get_all_patients', methods=['GET'])
+def get_all_patients():
+    result = service.get_all_patients()
     return jsonify(result)
 
 
 @app.route('/get_patients', methods=['GET'])
 def get_patients():
-    # return 'OK', 200?
-    result = service.get_patients()
+    filters = request.get_json()
+    result = service.get_patients(filters)
     return jsonify(result)
+
+
+@app.route('/get_patient_ekgs/<string:policy_num>', methods=['GET'])
+def get_patient_ekgs(policy_num):
+    result = service.get_patient_ekgs(policy_num)
+    return jsonify(result)
+
+
+@app.route('/get_ekg/<int:ekg_id>', methods=['GET'])
+def get_ekg(ekg_id):
+    result = service.get_ekg(ekg_id)
+    return jsonify(result)
+
+
+@app.route('/delete_patient/<int:patient_id>', methods=['DELETE'])
+def delete_patient(patient_id):
+    service.delete_patient(patient_id)
+    return 'OK', 200
+
+
+@app.route('/delete_ekg/<int:ekg_id>', methods=['DELETE'])
+def delete_ekg(ekg_id):
+    service.delete_ekg(ekg_id)
+    return 'OK', 200

@@ -16,15 +16,11 @@ from backend.utils.colnames import (
 from backend.model_training import (
     scaler, model_logreg, model_forest, model_svm, app
 )
+from backend.utils.connect import db_transaction
 
-def get_train_ekg():
+@db_transaction
+def get_train_ekg(conn, cur):
     df_cols = ('gender', 'age', 'weight', 'height') + tuple(EKG_COLUMNS)
-
-    conn = psycopg2.connect(dbname='nuo_detect',
-                            user='u1',
-                            password='1',
-                            host='127.0.0.1')
-    cur = conn.cursor()
 
     exec_cols = ('patients.gender', 'patients.age', 'patients.weight', 'patients.height') + \
         tuple(map(lambda x: 'ekgs.' + x, EKG_COLUMNS))

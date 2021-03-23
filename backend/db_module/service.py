@@ -12,15 +12,11 @@ from backend.utils.colnames import (
     ECG, DATE, NOISY_COLS, USELESS_COLS, DISRESPECT_COLS, TARGET_COL, DB_REGISTRY_DATE,
     COLUMN_MAP, DB_PROB_LOG_REG, DB_PROB_RND_FOREST, DB_PROB_SVM, EKG_COLUMNS
 )
-
-conn = psycopg2.connect(dbname='nuo_detect',
-                        user='u1',
-                        password='1',
-                        host='127.0.0.1')
-cur = conn.cursor()
+from backend.utils.connect import db_transaction
 
 
-def export_csv(filename):
+@db_transaction
+def export_csv(conn, cur, filename):
     def reldate(x):
         return relativedelta(x['Дата/Время съема ЭКГ/глюкозы'], x['Дата рождения']).years
 
@@ -55,7 +51,6 @@ def export_csv(filename):
                         f"VALUES ({','.join(['%s'] * len(user_data))})",
                         (tuple(user_data.values()))
                         )
-            conn.commit()
 
             cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
             patient_id = cur.fetchone()[0]
@@ -108,7 +103,8 @@ def export_csv(filename):
         conn.commit()
 
 
-def update_ekg(data):
+@db_transaction
+def update_ekg(conn, cur, data):
     ekg_id = data.pop('ekg_id')
     subquery = ', '.join([f'{k}=%s' for k in data.keys()])
     cur.execute(
@@ -118,8 +114,11 @@ def update_ekg(data):
     conn.commit()
 
 
-# NEED TEST
-def inset_ekg(data):
+@db_transaction
+def insert_ekg(conn, cur, data):
+    cur.execute("SELECT nextval(pg_get_serial_sequence('ekgs', 'ekg_id'))")
+    ekg_id = cur.fetchone()[0]
+    data['ekg_id'] = ekg_id
     cur.execute(
         f"INSERT INTO ekgs({', '.join(data.keys())})"
         f"VALUES ({','.join(['%s'] * len(data))})",
@@ -129,18 +128,19 @@ def inset_ekg(data):
 
 
 # NEED TEST
-def update_patient(patient_data):
+@db_transaction
+def update_patient(conn, cur, patient_data):
     patient_id = patient_data.pop('patient_id')
     subquery = ', '.join([f'{k}=%s' for k in patient_data.keys()])
     cur.execute(
-        f"UPDATE ekgs SET {subquery} WHERE patient_id=%s",
+        f"UPDATE patients SET {subquery} WHERE patient_id=%s",
         (tuple(patient_data.values()) + (patient_id,))
     )
     conn.commit()
 
 
-# NEED TEST
-def insert_patient(patient_data):
+@db_transaction
+def insert_patient(conn, cur, patient_data):
     cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
     user_id = cur.fetchone()[0]
 
@@ -159,7 +159,8 @@ def insert_patient(patient_data):
     cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
     patient_id = cur.fetchone()[0]
 
-    patient_data[patient_id] = patient_id
+    patient_data['patient_id'] = patient_id
+    patient_data['user_id'] = user_id
     cur.execute(
         f"INSERT INTO patients({', '.join(patient_data.keys())}) "
         f"VALUES ({','.join(['%s'] * len(patient_data))})",
@@ -168,9 +169,49 @@ def insert_patient(patient_data):
     conn.commit()
 
 
-def get_patient_ekgs(policy_num):
+@db_transaction
+def get_all_patients(conn, cur):
+    cols = (
+        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
+    )
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(cols)} "
+        "FROM patients"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
+
+
+@db_transaction
+def get_patients(conn, cur, filters):
+    cols = (
+        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
+    )
+
+    subquery_in = [f"POSITION('{value}' IN patients.{col}) = 1" for col, value in filters.items()]
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(cols)} "
+        "FROM patients "
+        f"WHERE {' AND '.join(subquery_in)}"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
+
+
+@db_transaction
+def get_patient_ekgs(conn, cur, policy_num):
     exec_cols = (
-        'ekg_id, registry_date'
+        'ekg_id', 'registry_date'
     )
     cur.execute(
         "SELECT row_to_json(data) FROM "
@@ -186,18 +227,29 @@ def get_patient_ekgs(policy_num):
     return data
 
 
-def get_patients():
-    cols = (
-        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
-    )
+@db_transaction
+def get_ekg(conn, cur, ekg_id):
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
-        f"SELECT {','.join(cols)} "
-        "FROM patients"
+        f"SELECT {','.join(EKG_COLUMNS)} "
+        "FROM ekgs "
+        f"WHERE ekgs.ekg_id = {ekg_id}"
         ") data"
     )
-    data = []
-    for d in cur:
-        data.append(d[0])
+    data = cur.fetchone()[0]
     return data
+
+
+@db_transaction
+def delete_patient(conn, cur, patient_id):
+    cur.execute(f"SELECT user_id FROM patients WHERE patient_id = {patient_id}")
+    user_id = cur.fetchone()[0]
+    cur.execute(f"DELETE FROM users WHERE user_id = {user_id}")
+    conn.commit()
+
+
+@db_transaction
+def delete_ekg(conn, cur, ekg_id):
+    cur.execute(f"DELETE FROM ekgs WHERE ekg_id = {ekg_id}")
+    conn.commit()
