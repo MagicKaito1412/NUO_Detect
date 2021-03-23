@@ -1,7 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
-app = Flask(__name__,)
+app = Flask(__name__)
+CORS(app)
+
 app.url_map.strict_slashes = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://u1:1@127.0.0.1:5432/nuo_detect?client_encoding=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

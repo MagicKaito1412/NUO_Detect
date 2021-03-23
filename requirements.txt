@@ -2,6 +2,7 @@ flask
 flask_sqlalchemy
 flask_script
 flask_migrate
+flask-cors
 psycopg2
 alembic
 pandas

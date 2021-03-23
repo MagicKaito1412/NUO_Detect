@@ -168,18 +168,10 @@ def insert_patient(patient_data):
     conn.commit()
 
 
-# NEED TEST (WHY SO MANY USELESS INFO FOR DOCTOR?)
-def get_patient_ekg(policy_num):
+def get_patient_ekgs(policy_num):
     exec_cols = (
-        'patients.first_name',
-        'patients.last_name',
-        'patients.gender',
-        'patients.age',
-        'patients.weight',
-        'patients.height',
-        'patients.policy_num',
-    ) + \
-        tuple(map(lambda x: 'ekgs.' + x, EKG_COLUMNS))
+        'ekg_id, registry_date'
+    )
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
@@ -188,7 +180,9 @@ def get_patient_ekg(policy_num):
         f"WHERE patients.policy_num = '{policy_num}'"
         ") data"
     )
-    data = cur.fetchall()
+    data = []
+    for d in cur:
+        data.append(d[0])
     return data
 
 
@@ -207,20 +201,3 @@ def get_patients():
     for d in cur:
         data.append(d[0])
     return data
-
-
-# def get_patient_ekg():
-#     cols = (
-#         'patient_id', 'first_name', 'last_name', 'gender', 'age', 'policy_num',
-#     )
-#     cur.execute(
-#         "SELECT row_to_json(data) FROM "
-#         "("
-#         f"SELECT {','.join(cols)} "
-#         "FROM patients"
-#         ") data"
-#     )
-#     data = []
-#     for d in cur:
-#         data.append(d[0])
-#     return data
