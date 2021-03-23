@@ -8,16 +8,15 @@
                     </div>
                     <divider/>
                     <div class="pa-5">
-                        <div class="mb-2 flr justify-sb">
-                            <span class="mr-2">Логин</span>
-                            <el-input class="input-width-250" v-model="user.login"/>
-                        </div>
-                        <div class="mb-2 flr justify-sb">
-                            <span class="mr-2">Пароль</span>
-                            <el-input class="input-width-250" v-model="user.password" show-password/>
-                        </div>
+                        <n-input label="Логин"
+                                 :value.sync="user.login"/>
+                        <n-input label="Пароль"
+                                 :password="true"
+                                 :value.sync="user.password"/>
                         <div class="primary-button flr justify-c mt-3">
-                            <el-button style="width: 100%; margin: 7px 0 0 0; padding: 5px 0;" @click="loginClick">Войти</el-button>
+                            <el-button style="width: 100%; margin: 7px 0 0 0; padding: 5px 0;" @click="loginClick">
+                                Войти
+                            </el-button>
                         </div>
                     </div>
                 </div>
@@ -39,6 +38,7 @@ export default {
     methods: {
         loginClick() {
             //todo add back
+            console.log('LET ME IN')
             this.$set(this.user, 'id', 1)
             this.$set(this.user, 'access_level', Number(this.user.login))
             this.$store.commit('SET_AUTH_USER', this.user)

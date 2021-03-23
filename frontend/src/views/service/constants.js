@@ -41,3 +41,13 @@ export const DOCTORS_TABLE_HEADERS = [
         key: "telephone",
     }
 ]
+
+export const EKGS_TABLE_HEADERS = [
+    {
+        title: "НОМЕР ЭКГ",
+        key: "ekg_id",
+    },{
+        title: "ДАТА СЪЕМА",
+        key: "registry_date",
+    }
+]

@@ -3,23 +3,19 @@
         <h3>Список пациентов, зарегистрированных в системе</h3>
         <n-table :tableData="tableData" :columns="columns" @rowClick="rowClick">
             <div class="flr mb-2 justify-sb">
-                <div class="flr ">
-                    <span class="mr-2">Фамилия</span>
-                    <el-input class="input-width-250" v-model="searchOptions.last_name"/>
-                </div>
-                <div class="flr">
-                    <span class="mr-2">Имя</span>
-                    <el-input class="input-width-250" v-model="searchOptions.first_name"/>
-                </div>
-                <div class="flr">
-                    <span class="mr-2">Отчество</span>
-                    <el-input class="input-width-250" v-model="searchOptions.middle_name"/>
-                </div>
-                <div class="flr">
-                    <span class="mr-2">Номер полиса</span>
-                    <el-input class="input-width-250" v-model="searchOptions.policy_num"/>
-                </div>
+                <n-input label="Фамилия"
+                         :value.sync="searchOptions.last_name"/>
+                <n-input label="Имя"
+                         :value.sync="searchOptions.first_name"/>
+                <n-input label="Отчество"
+                         :value.sync="searchOptions.middle_name"/>
+                <n-input label="Номер полиса"
+                         :value.sync="searchOptions.policy_num"/>
             </div>
+            <template slot="buttons">
+                <el-button @click="getPatientsFromCsv">Загрузить из CSV</el-button>
+                <el-button @click="createNew">Зарегистрировать пациента</el-button>
+            </template>
         </n-table>
     </div>
 </template>
@@ -33,200 +29,28 @@ export default {
     data() {
         return {
             searchOptions: {},
-            tableData: [
-                {
-                    patient_id: 1,
-                    first_name: "AAAA",
-                    last_name: "BBB",
-                    middle_name: "CCC",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "34534534"
-                },
-                {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 2,
-                    first_name: "dffhgfhgf",
-                    last_name: "BfghghBB",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                }, {
-                    patient_id: 234,
-                    first_name: "342432",
-                    last_name: "234234",
-                    middle_name: "fghhj",
-                    gender: "м",
-                    age: "23",
-                    policy_num: "rt6587"
-                },
-            ]
+            tableData: []
         }
     },
     methods: {
         loadPatients() {
-            //todo uncomment
-            Service.loadPatients()
-            //     .then(result => {
-            //     this.$set(this, 'tableData', result)
-            // })
+            Service.loadPatients().then(result => {
+                this.$set(this, 'tableData', result.data)
+            })
         },
         rowClick(item) {
             //todo mb get patient by id
             this.$store.commit('SET_SELECTED_PATIENT', item)
             this.goTo('patient')
+        },
+        getPatientsFromCsv() {
+            Service.getPatientsFromCsv().then(result => {
+                console.log('result', result.data)
+            })
+        },
+        createNew() {
+            this.$store.commit('SET_SELECTED_PATIENT', {})
+            this.goTo('patient', {creationMode: true})
         }
     },
     computed: {

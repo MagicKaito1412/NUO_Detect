@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="pa-3 flс mb-10 soft-border">
+        <div class="pa-3 flс mb-10 soft-border" v-if="showFilters">
             <slot name="default"/>
             <div class="primary-button mt-5">
-                <el-button style="width: 10%" @click="$emit('reloadData')">{{ reloadButtonLabel }}</el-button>
+                <el-button style="width: 10%" @click="$emit('reloadData')" v-if="showReloadButton">{{ reloadButtonLabel }}</el-button>
                 <slot name="buttons"/>
             </div>
         </div>
@@ -30,6 +30,10 @@ export default {
         columns: {
             type: Array,
             default: () => []
+        },
+        showFilters: {
+            type: Boolean,
+            default: true
         },
         showReloadButton: {
             type: Boolean,

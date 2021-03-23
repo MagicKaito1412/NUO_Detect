@@ -14,6 +14,7 @@ const state = {
     authPerson: {}, //class User or Doctor or Patient
     selectedPatient: {}, //class Patient
     selectedDoctor: {}, //class Doctor
+    selectedEkg: {}, //class Ekg
 };
 
 const getters = {
@@ -21,6 +22,7 @@ const getters = {
     getAuthPerson: state => state.authPerson,
     getSelectedPatient: state => state.selectedPatient,
     getSelectedDoctor: state => state.selectedDoctor,
+    getSelectedEkg: state => state.selectedEkg,
 };
 
 const mutations = {
@@ -36,11 +38,15 @@ const mutations = {
     SET_SELECTED_DOCTOR(state, value) {
         state.selectedDoctor = value
     },
+    SET_SELECTED_EKG(state, value) {
+        state.selectedEkg = value
+    },
     LOGOUT(state) {
         state.authUser = {}
         state.authPerson = {}
         state.selectedPatient = {}
         state.selectedDoctor = {}
+        state.selectedEkg = {}
     }
 };
 
