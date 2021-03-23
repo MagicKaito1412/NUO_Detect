@@ -194,7 +194,7 @@ def get_patient_ekg(policy_num):
 
 def get_patients():
     cols = (
-        'patient_id', 'first_name', 'last_name', 'gender', 'age', 'policy_num',
+        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
     )
     cur.execute(
         "SELECT row_to_json(data) FROM "
@@ -209,7 +209,7 @@ def get_patients():
     return data
 
 
-# def get_patients():
+# def get_patient_ekg():
 #     cols = (
 #         'patient_id', 'first_name', 'last_name', 'gender', 'age', 'policy_num',
 #     )
@@ -223,5 +223,4 @@ def get_patients():
 #     data = []
 #     for d in cur:
 #         data.append(d[0])
-#     print(data[0])
 #     return data
