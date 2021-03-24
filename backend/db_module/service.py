@@ -45,7 +45,7 @@ def export_csv(conn, cur, filename):
                 user_id=user_id,
                 login=f'user{user_id}',
                 password=f'user{user_id}',
-                access_level=0
+                access_level=1
             )
             cur.execute(f"INSERT INTO users({', '.join(user_data.keys())}) "
                         f"VALUES ({','.join(['%s'] * len(user_data))})",
@@ -58,9 +58,9 @@ def export_csv(conn, cur, filename):
                 'patient_id': patient_id,
                 'user_id': user_id,
                 'policy_num': ''.join([str(random.randint(0, 9)) for _ in range(16)]),
-                'first_name': f'user{len(added_patients)}',
-                'last_name': f'user{len(added_patients)}',
-                'middle_name': f'user{len(added_patients)}',
+                'first_name': f'first_user{len(added_patients)}',
+                'last_name': f'last_user{len(added_patients)}',
+                'middle_name': f'middle_user{len(added_patients)}',
                 'gender': row[TYPE],
                 'age': row[AGE],
                 'weight': row[WEIGHT],
