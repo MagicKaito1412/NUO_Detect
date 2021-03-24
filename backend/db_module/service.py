@@ -148,7 +148,7 @@ def insert_patient(conn, cur, patient_data):
         user_id=user_id,
         login=f'user{user_id}',
         password=f'user{user_id}',
-        access_level=0
+        access_level=1
     )
     cur.execute(
         f"INSERT INTO users({', '.join(user_data.keys())}) "
