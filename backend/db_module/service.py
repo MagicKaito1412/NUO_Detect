@@ -167,6 +167,7 @@ def insert_patient(conn, cur, patient_data):
         (tuple(patient_data.values()))
     )
     conn.commit()
+    return user_id, patient_id
 
 
 @db_transaction

@@ -29,8 +29,10 @@ def insert_patient():
     data = request.get_json()
     diff = patient_not_null_cols - (patient_not_null_cols & data.keys())
     if not diff:
-        service.insert_patient(data)
-        return 'OK', 200
+        user_id, patient_id = service.insert_patient(data)
+        data['user_id'] = user_id
+        data['patient_id'] = patient_id
+        return jsonify(data), 200
     s = str(tuple(diff.values()))
     return f"check {s}", 400
 
