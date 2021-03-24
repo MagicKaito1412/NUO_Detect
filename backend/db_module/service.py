@@ -127,7 +127,6 @@ def insert_ekg(conn, cur, data):
     conn.commit()
 
 
-# NEED TEST
 @db_transaction
 def update_patient(conn, cur, patient_data):
     patient_id = patient_data.pop('patient_id')
@@ -224,7 +223,7 @@ def get_patients(conn, cur, filters):
 
 
 @db_transaction
-def get_patient_ekgs(conn, cur, policy_num):
+def get_patient_ekgs(conn, cur, patient_id):
     exec_cols = (
         'ekg_id', 'registry_date'
     )
@@ -233,7 +232,7 @@ def get_patient_ekgs(conn, cur, policy_num):
         "("
         f"SELECT {','.join(exec_cols)} "
         "FROM ekgs LEFT JOIN patients ON ekgs.patient_id = patients.patient_id "
-        f"WHERE patients.policy_num = '{policy_num}'"
+        # f"WHERE patients.policy_num = '{policy_num}'"
         ") data"
     )
     data = []
