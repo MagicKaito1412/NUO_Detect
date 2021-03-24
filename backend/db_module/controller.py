@@ -70,6 +70,12 @@ def get_patients():
     return jsonify(result)
 
 
+@app.route('/get_patient/<int:patient_id>', methods=['GET'])
+def get_patient(patient_id):
+    result = service.get_patient(patient_id)
+    return jsonify(result)
+
+
 @app.route('/get_patient_ekgs/<string:policy_num>', methods=['GET'])
 def get_patient_ekgs(policy_num):
     result = service.get_patient_ekgs(policy_num)
