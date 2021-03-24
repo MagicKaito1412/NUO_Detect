@@ -61,7 +61,7 @@ def get_all_patients():
     return jsonify(result)
 
 
-@app.route('/get_patients', methods=['GET'])
+@app.route('/get_patients', methods=['POST'])
 def get_patients():
     filters = request.get_json()
     result = service.get_patients(filters)

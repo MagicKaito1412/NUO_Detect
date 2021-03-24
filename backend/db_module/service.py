@@ -193,7 +193,7 @@ def get_patients(conn, cur, filters):
         'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
     )
 
-    subquery_in = [f"POSITION('{value}' IN patients.{col}) = 1" for col, value in filters.items()]
+    subquery_in = [f"POSITION('{value.lower()}' IN LOWER(patients.{col})) = 1" for col, value in filters.items()]
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
