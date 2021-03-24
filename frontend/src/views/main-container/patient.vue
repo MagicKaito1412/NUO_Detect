@@ -22,10 +22,11 @@
                              :value.sync="patient.weight"/>
                     <div class="mt-10">
                         <span v-if="viewMode">
-                            Есть нарушение углеводного обмена: {{ patient.has_nuo ? 'ДА' : 'НЕТ' }}</span>
-                        <el-checkbox v-if="!viewMode" v-model="patient.has_nuo">
-                            Есть нарушение углеводного обмена
-                        </el-checkbox>
+                            Есть нарушение углеводного обмена: {{ nuoText }}</span>
+                        <n-input v-if="!viewMode" label="Есть нарушение углеводного обмена"
+                             class="mr-5"
+                             :readonly="viewMode"
+                             :value.sync="patient.has_nuo"/>
                     </div>
                     <div class="primary-button mt-3" v-if="viewMode">
                         <el-button class="width-11" @click="edit">Редактировать</el-button>
@@ -50,12 +51,13 @@
                 </div>
             </div>
             <div class="flr" v-if="!creationMode">
-                <div class="primary-button">
+                <div class="primary-button ml-5">
                     <el-button @click="addEkg">Добавить данные ЭКГ</el-button>
                 </div>
                 <n-table :tableData="tableData"
                          :columns="columns"
                          :showFilters="false"
+                         class="width-8"
                          @rowClick="rowClick"/>
             </div>
         </div>
@@ -84,7 +86,9 @@ export default {
             this.goTo('ekg')
         },
         loadEkgs() {
-            Service.loadEkgs()
+            Service.loadEkgs(this.getPatient.patient_id).then(result => {
+                this.$set(this, 'tableData', result.data)
+            })
         },
         addEkg() {
             Service.addEkg()
@@ -94,17 +98,35 @@ export default {
         },
         save() {
             if (this.creationMode) {
-                this.$set(this, 'creationMode', false);
+                Service.saveNewPatient(this.patient).then(result => {
+                    this.$set(this, 'creationMode', false);
+                    this.$set(this, 'patient', result.data);
+                    this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result))
+                })
+                return
             }
-            this.$set(this, 'editMode', false);
-            //todo
+            Service.updatePatient(this.patient).then(() => {
+                this.$set(this, 'editMode', false)
+                this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, this.patient))
+            })
         }
     },
     computed: {
+        nuoText() {
+            if (this.patient.has_nuo === 1) {
+                return 'ДА'
+            }
+            if (this.patient.has_nuo === 0) {
+                return 'НЕТ'
+            }
+            if (this.patient.has_nuo === -1) {
+                return 'НЕИЗВЕСТНО'
+            }
+            return ''
+        },
         getAuthUser() {
             return this.$store.getters.getAuthUser
         },
-        //clone obj from store
         getPatient() {
             if (this.getAuthUser.access_level === 2) {
                 return this.$store.getters.getSelectedPatient
@@ -126,6 +148,9 @@ export default {
     mounted() {
         this.loadEkgs()
         this.$set(this, 'creationMode', this.$route.params.creationMode)
+        if (!this.creationMode) {
+            this.$set(this, 'patient', Object.assign({}, this.getPatient))
+        }
     }
 }
 </script>

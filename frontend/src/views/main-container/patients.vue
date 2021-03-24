@@ -1,7 +1,8 @@
 <template>
     <div>
         <h3>Список пациентов, зарегистрированных в системе</h3>
-        <n-table :tableData="tableData" :columns="columns" @rowClick="rowClick">
+        <n-table :tableData="tableData" :columns="columns"
+                 @rowClick="rowClick" @reloadData="reloadData">
             <div class="flr mb-2 justify-sb">
                 <n-input label="Фамилия"
                          :value.sync="searchOptions.last_name"/>
@@ -9,8 +10,6 @@
                          :value.sync="searchOptions.first_name"/>
                 <n-input label="Отчество"
                          :value.sync="searchOptions.middle_name"/>
-                <n-input label="Номер полиса"
-                         :value.sync="searchOptions.policy_num"/>
             </div>
             <template slot="buttons">
                 <el-button @click="getPatientsFromCsv">Загрузить из CSV</el-button>
@@ -38,13 +37,20 @@ export default {
                 this.$set(this, 'tableData', result.data)
             })
         },
+        reloadData() {
+            Service.loadFilteredPatients(this.searchOptions).then(result => {
+                this.$set(this, 'tableData', result.data)
+            })
+        },
         rowClick(item) {
-            //todo mb get patient by id
-            this.$store.commit('SET_SELECTED_PATIENT', item)
-            this.goTo('patient')
+            Service.getPatientById(item.patient_id).then(result => {
+                this.$store.commit('SET_SELECTED_PATIENT', result.data)
+                this.goTo('patient')
+            })
         },
         getPatientsFromCsv() {
             Service.getPatientsFromCsv().then(result => {
+                //todo add file selection later
                 console.log('result', result.data)
             })
         },
