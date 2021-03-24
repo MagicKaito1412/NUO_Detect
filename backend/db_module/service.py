@@ -230,7 +230,7 @@ def get_patient_ekgs(conn, cur, patient_id):
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
-        f"SELECT ekg_id, TO_CHAR(registry_date, 'DD.MM.YYYY HH:MI') "
+        f"SELECT ekg_id, TO_CHAR(registry_date, 'DD.MM.YYYY HH:MI') as registry_date "
         f"FROM ekgs WHERE ekgs.patient_id = {patient_id} "
         ") data"
     )
