@@ -45,7 +45,7 @@ export default {
         //todo add after back
     },
 
-    addEkg() {
-        //todo add after back
+    addEkg(dto) {
+        return axios.post(`${LOCALHOST}/insert_ekg`, dto, CONFIG)
     },
 }

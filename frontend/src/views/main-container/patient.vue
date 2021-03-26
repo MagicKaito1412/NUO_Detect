@@ -24,12 +24,13 @@
                         <span v-if="viewMode">
                             Есть нарушение углеводного обмена: {{ nuoText }}</span>
                         <n-input v-if="!viewMode" label="Есть нарушение углеводного обмена"
-                             class="mr-5"
-                             :readonly="viewMode"
-                             :value.sync="patient.has_nuo"/>
+                                 class="mr-5"
+                                 :readonly="viewMode"
+                                 :value.sync="patient.has_nuo"/>
                     </div>
                     <div class="primary-button mt-3" v-if="viewMode">
                         <el-button class="width-11" @click="edit">Редактировать</el-button>
+                        <el-button class="width-11" @click="predict">Расчитать вероятность НУО</el-button>
                     </div>
                     <div class="primary-button mt-3" v-else>
                         <el-button class="width-11" @click="save">Сохранить</el-button>
@@ -91,7 +92,7 @@ export default {
             })
         },
         addEkg() {
-            Service.addEkg()
+            this.goTo('ekg')
         },
         edit() {
             this.$set(this, 'editMode', true);
@@ -109,6 +110,9 @@ export default {
                 this.$set(this, 'editMode', false)
                 this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, this.patient))
             })
+        },
+        predict() {
+            //todo
         }
     },
     computed: {
