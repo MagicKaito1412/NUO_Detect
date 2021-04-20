@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Service from '../service/service'
+import PatientService from '../service/patient-service'
 import {PATIENTS_TABLE_HEADERS} from "../service/constants";
 
 export default {
@@ -33,23 +33,23 @@ export default {
     },
     methods: {
         loadPatients() {
-            Service.loadPatients().then(result => {
+            PatientService.loadPatients().then(result => {
                 this.$set(this, 'tableData', result.data)
             })
         },
         reloadData() {
-            Service.loadFilteredPatients(this.searchOptions).then(result => {
+            PatientService.loadFilteredPatients(this.searchOptions).then(result => {
                 this.$set(this, 'tableData', result.data)
             })
         },
         rowClick(item) {
-            Service.getPatientById(item.patient_id).then(result => {
+            PatientService.getPatientById(item.patient_id).then(result => {
                 this.$store.commit('SET_SELECTED_PATIENT', result.data)
                 this.goTo('patient')
             })
         },
         getPatientsFromCsv() {
-            Service.getPatientsFromCsv().then(result => {
+            PatientService.getPatientsFromCsv().then(result => {
                 //todo add file selection later
                 console.log('result', result.data)
             })

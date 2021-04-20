@@ -3,6 +3,8 @@
         <span class="mr-2">{{ label }}</span>
         <el-input :class="`input-width-${250}`"
                   :readonly="readonly"
+                  :type="type"
+                  :maxlength="maxlength"
                   :show-password="password"
                   v-model="innerValue"/>
     </div>
@@ -32,10 +34,18 @@ export default {
             type: Number,
             default: 250
         },
+        maxlength: {
+            type: Number,
+            default: 250
+        },
         value: {
             default: null
         },
         label: {
+            type: String,
+            default: ''
+        },
+        type: {
             type: String,
             default: ''
         }

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Service from '../service/service'
+import Service from '../service/doctor-service'
 import {DOCTORS_TABLE_HEADERS} from "../service/constants";
 import DoctorEditor from './dialogs/doctor-editor'
 
@@ -53,7 +53,8 @@ export default {
             // })
         },
         rowClick(item) {
-            //todo mb get patient by id
+            //todo add controller get doctor by id
+            Service.getDoctorById()
             this.$store.commit('SET_SELECTED_DOCTOR', item)
             this.$set(this, 'showDialog', true)
         },

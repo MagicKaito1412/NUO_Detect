@@ -1,3 +1,10 @@
+export const LOCALHOST = 'http://127.0.0.1:5000'
+export const CONFIG = {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+}
+
 export const PATIENTS_TABLE_HEADERS = [
     {
         title: "НОМЕР ПАЦИЕНТА",

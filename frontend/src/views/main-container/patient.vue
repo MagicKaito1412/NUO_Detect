@@ -34,6 +34,7 @@
                     </div>
                     <div class="primary-button mt-3" v-else>
                         <el-button class="width-11" @click="save">Сохранить</el-button>
+                        <el-button class="width-11" @click="cancel">Отменить</el-button>
                     </div>
                 </div>
                 <div class="flc">
@@ -66,8 +67,9 @@
 </template>
 
 <script>
-import Service from '../service/service'
-import {EKGS_TABLE_HEADERS} from "../service/constants";
+import PatientService from '../service/patient-service'
+import EkgService from '../service/ekg-service'
+import {EKGS_TABLE_HEADERS} from "../service/constants"
 import {Patient} from "../service/models";
 
 export default {
@@ -87,7 +89,7 @@ export default {
             this.goTo('ekg')
         },
         loadEkgs() {
-            Service.loadEkgs(this.getPatient.patient_id).then(result => {
+            EkgService.loadEkgs(this.getPatient.patient_id).then(result => {
                 this.$set(this, 'tableData', result.data)
             })
         },
@@ -99,17 +101,26 @@ export default {
         },
         save() {
             if (this.creationMode) {
-                Service.saveNewPatient(this.patient).then(result => {
+                PatientService.saveNewPatient(this.patient).then(result => {
                     this.$set(this, 'creationMode', false);
                     this.$set(this, 'patient', result.data);
                     this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result))
                 })
                 return
             }
-            Service.updatePatient(this.patient).then(() => {
+            PatientService.updatePatient(this.patient).then(() => {
                 this.$set(this, 'editMode', false)
                 this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, this.patient))
             })
+        },
+        cancel() {
+            if (!this.creationMode) {
+                this.$set(this, 'editMode', false)
+                this.$set(this, 'patient', Object.assign({}, this.getPatient))
+            } else {
+                //todo fix bug here
+                this.goTo('patients')
+            }
         },
         predict() {
             //todo
@@ -150,9 +161,10 @@ export default {
         }
     },
     mounted() {
-        this.loadEkgs()
-        this.$set(this, 'creationMode', this.$route.params.creationMode)
+        let routeCreationMode = this.$route.params.creationMode
+        this.$set(this, 'creationMode', routeCreationMode ? routeCreationMode : false)
         if (!this.creationMode) {
+            this.loadEkgs()
             this.$set(this, 'patient', Object.assign({}, this.getPatient))
         }
     }
