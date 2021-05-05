@@ -45,7 +45,7 @@ def export_csv(conn, cur, filename):
                 user_id=user_id,
                 login=f'user{user_id}',
                 password=f'user{user_id}',
-                access_level=1
+                access_level=3
             )
             cur.execute(f"INSERT INTO users({', '.join(user_data.keys())}) "
                         f"VALUES ({','.join(['%s'] * len(user_data))})",
@@ -147,7 +147,7 @@ def insert_patient(conn, cur, patient_data):
         user_id=user_id,
         login=f'user{user_id}',
         password=f'user{user_id}',
-        access_level=1
+        access_level=3
     )
     cur.execute(
         f"INSERT INTO users({', '.join(user_data.keys())}) "
@@ -167,6 +167,77 @@ def insert_patient(conn, cur, patient_data):
     )
     conn.commit()
     return user_id, patient_id
+
+
+@db_transaction
+def insert_doctor(conn, cur, doctor_data):
+    cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
+    user_id = cur.fetchone()[0]
+
+    user_data = dict(
+        user_id=user_id,
+        login=f'doctor{user_id}',
+        password=f'doctor{user_id}',
+        access_level=2
+    )
+    cur.execute(
+        f"INSERT INTO users({', '.join(user_data.keys())}) "
+        f"VALUES ({','.join(['%s'] * len(user_data))})",
+        (tuple(user_data.values()))
+    )
+
+    cur.execute("SELECT nextval(pg_get_serial_sequence('doctors', 'doctor_id'))")
+    doctor_id = cur.fetchone()[0]
+
+    doctor_data['doctor_id'] = doctor_id
+    doctor_data['user_id'] = user_id
+    cur.execute(
+        f"INSERT INTO doctors({', '.join(doctor_data.keys())}) "
+        f"VALUES ({','.join(['%s'] * len(doctor_data))})",
+        (tuple(doctor_data.values()))
+    )
+    conn.commit()
+    return user_id, doctor_id
+
+
+@db_transaction
+def get_all_doctors(conn, cur):
+    cols = (
+        'doctor_id', 'first_name', 'last_name', 'middle_name', 'telephone',
+    )
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(cols)} "
+        "FROM doctors"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
+
+
+@db_transaction
+def get_doctors(conn, cur, filters):
+    cols = (
+        'doctor_id', 'first_name', 'last_name', 'middle_name', 'telephone',
+    )
+    if not filters:
+        filters = dict(first_name="")
+    subquery_in = [f"POSITION('{value.lower()}' IN LOWER(doctors.{col})) = 1" for col, value in filters.items()]
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT {','.join(cols)} "
+        "FROM doctors "
+        f"WHERE {' AND '.join(subquery_in)}"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
 
 
 @db_transaction
@@ -206,7 +277,8 @@ def get_patients(conn, cur, filters):
     cols = (
         'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
     )
-
+    if not filters:
+        filters = dict(first_name="")
     subquery_in = [f"POSITION('{value.lower()}' IN LOWER(patients.{col})) = 1" for col, value in filters.items()]
     cur.execute(
         "SELECT row_to_json(data) FROM "
@@ -251,6 +323,23 @@ def get_ekg(conn, cur, ekg_id):
         ") data"
     )
     data = cur.fetchone()[0]
+    return data
+
+
+@db_transaction
+def get_user(conn, cur, login, password):
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT * "
+        "FROM users "
+        f"WHERE users.login = '{login}' AND users.password = '{password}'"
+        ") data"
+    )
+    data = None
+    finding = cur.fetchone()
+    if finding is not None:
+        data = finding[0]
     return data
 
 

@@ -1,7 +1,8 @@
 <template>
     <div>
         <h3>Врачи, зарегистрированные в системе</h3>
-        <n-table :tableData="tableData" :columns="columns" @rowClick="rowClick">
+        <n-table :tableData="tableData" :columns="columns"
+                 @rowClick="rowClick" @reloadData="reloadData">
             <div class="flr mb-2 justify-sb">
                 <n-input label="Фамилия"
                          :value.sync="searchOptions.last_name"/>
@@ -13,7 +14,9 @@
                          :value.sync="searchOptions.telephone"/>
             </div>
             <template slot="buttons">
-                <el-button @click="createNew">Зарегистировать нового</el-button>
+                <n-button
+                    @click="createNew"
+                    label="Зарегистировать нового"/>
             </template>
         </n-table>
         <doctor-editor :visible.sync="showDialog" :createMode.sync="createMode"/>
@@ -31,26 +34,21 @@ export default {
     data() {
         return {
             searchOptions: {},
-            tableData: [
-                {
-                    doctor_id: 234,
-                    first_name: "Алибек",
-                    last_name: "Алибеков",
-                    middle_name: "Алибекович",
-                    telephone: 4589475845,
-                },
-            ],
+            tableData: [],
             showDialog: false,
             createMode: false,
         }
     },
     methods: {
         loadDoctors() {
-            //todo uncomment
-            Service.loadDoctors()
-            //     .then(result => {
-            //     this.$set(this, 'tableData', result)
-            // })
+            Service.loadDoctors().then(result => {
+                this.$set(this, 'tableData', result.data)
+            })
+        },
+        reloadData() {
+            Service.loadFilteredDoctors(this.searchOptions).then(result => {
+                this.$set(this, 'tableData', result.data)
+            })
         },
         rowClick(item) {
             //todo add controller get doctor by id

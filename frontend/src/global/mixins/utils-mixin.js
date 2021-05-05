@@ -1,6 +1,6 @@
 export default {
     methods: {
-        goTo(name, params = null) {
+        goTo(name, params = {}) {
             if (this.$route.name === name || typeof name !== 'string') return;
             let routerData = {
                 name: name,

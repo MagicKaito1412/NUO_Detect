@@ -20,6 +20,7 @@ export class Patient {
     prob_log_reg
     prob_rnd_forest
     prob_log_svm
+    email
 }
 
 export class Doctor {
@@ -30,6 +31,7 @@ export class Doctor {
     middle_name
     cabinet
     telephone
+    email
 }
 
 export class EKG {

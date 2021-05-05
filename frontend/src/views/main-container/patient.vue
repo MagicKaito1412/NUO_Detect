@@ -18,6 +18,7 @@
                              :value.sync="patient.gender"/>
                     <n-input label="Вес (кг)"
                              class="mr-5"
+                             type="number"
                              :readonly="viewMode"
                              :value.sync="patient.weight"/>
                     <div class="mt-10">
@@ -28,13 +29,25 @@
                                  :readonly="viewMode"
                                  :value.sync="patient.has_nuo"/>
                     </div>
-                    <div class="primary-button mt-3" v-if="viewMode">
-                        <el-button class="width-11" @click="edit">Редактировать</el-button>
-                        <el-button class="width-11" @click="predict">Расчитать вероятность НУО</el-button>
+                    <div class=" mt-3" v-if="viewMode">
+                        <n-button
+                            @click="edit"
+                            label="Редактировать"
+                        />
+                        <n-button
+                            @click="predict"
+                            label="Расчитать вероятность НУО"
+                        />
                     </div>
-                    <div class="primary-button mt-3" v-else>
-                        <el-button class="width-11" @click="save">Сохранить</el-button>
-                        <el-button class="width-11" @click="cancel">Отменить</el-button>
+                    <div class="flr mt-3" v-else>
+                        <n-button
+                            @click="save"
+                            label="Сохранить"
+                        />
+                        <n-button
+                            @click="cancel"
+                            label="Отменить"
+                        />
                     </div>
                 </div>
                 <div class="flc">
@@ -54,7 +67,10 @@
             </div>
             <div class="flr" v-if="!creationMode">
                 <div class="primary-button ml-5">
-                    <el-button @click="addEkg">Добавить данные ЭКГ</el-button>
+                    <n-button
+                        @click="addEkg"
+                        label="Добавить данные ЭКГ"
+                    />
                 </div>
                 <n-table :tableData="tableData"
                          :columns="columns"
@@ -118,7 +134,6 @@ export default {
                 this.$set(this, 'editMode', false)
                 this.$set(this, 'patient', Object.assign({}, this.getPatient))
             } else {
-                //todo fix bug here
                 this.goTo('patients')
             }
         },

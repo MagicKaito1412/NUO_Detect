@@ -2,8 +2,11 @@
     <div>
         <div class="pa-3 flс mb-10 soft-border" v-if="showFilters">
             <slot name="default"/>
-            <div class="primary-button mt-5">
-                <el-button style="width: 10%" @click="$emit('reloadData')" v-if="showReloadButton">{{ reloadButtonLabel }}</el-button>
+            <div class="mt-5 flr">
+                <n-button
+                    v-if="showReloadButton"
+                    @click="$emit('reloadData')"
+                    :label="reloadButtonLabel"/>
                 <slot name="buttons"/>
             </div>
         </div>

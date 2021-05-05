@@ -2,37 +2,42 @@
     <n-dialog :visible="visible" :title="title" @close="close">
         <div class="flr justify-sb">
             <n-input
-                :spaceBetween="false"
                 :value.sync="doctor.last_name"
+                @keyup.enter.native.prevent="save"
                 label="Фамилия"
             />
             <n-input
-                :spaceBetween="false"
                 :value.sync="doctor.first_name"
+                @keyup.enter.native.prevent="save"
                 label="Имя"
             />
-        </div>
-        <n-input
-            :spaceBetween="false"
-            :value.sync="doctor.middle_name"
-            label="Отчество"
-        />
-        <div class="flr justify-sb">
             <n-input
-                :spaceBetween="false"
-                type="number"
+                :value.sync="doctor.middle_name"
+                @keyup.enter.native.prevent="save"
+                label="Отчество"
+            />
+            <n-input
+                :maxlength="6"
+                :value.sync="doctor.cabinet"
+                @keyup.enter.native.prevent="save"
+                label="Кабинет"
+            />
+            <n-input
                 :maxlength="11"
                 :value.sync="doctor.telephone"
+                @keyup.enter.native.prevent="save"
                 label="Телефон"
             />
             <n-input
-                :spaceBetween="false"
-                :value.sync="doctor.telephone"
-                label="Кабинет"
+                :value.sync="doctor.email"
+                @keyup.enter.native.prevent="save"
+                label="E-mail"
             />
         </div>
         <div class="primary-button flr justify-c mt-3">
-            <el-button class="width-11" @click="save">Сохранить</el-button>
+            <n-button
+                @click="save"
+                label="Сохранить"/>
         </div>
     </n-dialog>
 </template>
@@ -76,12 +81,17 @@ export default {
         close() {
             this.$emit('update:createMode', false)
             this.$emit('update:visible', false)
+            this.$emit('reloadData')
         },
         save() {
-            //todo
             if (this.createMode) {
-                Service.saveNewDoctor()
+                Service.saveNewDoctor(this.doctor).then(result => {
+                    this.$set(this, 'doctor', result.data);
+                }).finally(() => {
+                    this.close()
+                })
             } else {
+                //todo
                 Service.updateDoctor()
             }
         },

@@ -12,8 +12,14 @@
                          :value.sync="searchOptions.middle_name"/>
             </div>
             <template slot="buttons">
-                <el-button @click="getPatientsFromCsv">Загрузить из CSV</el-button>
-                <el-button @click="createNew">Зарегистрировать пациента</el-button>
+                <n-button
+                    @click="getPatientsFromCsv"
+                    label="Загрузить из CSV"
+                />
+                <n-button
+                    @click="createNew"
+                    label="Зарегистрировать пациента"
+                />
             </template>
         </n-table>
     </div>

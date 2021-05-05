@@ -34,28 +34,6 @@
   border-radius: 5px;
 }
 
-.primary-button {
-  .el-button {
-    padding: 10px 20px;
-    font-weight: bold;
-    background-color: $--color-primary-light;
-    color: white;
-    border: 1px solid $--color-primary-light;
-    border-radius: 2px;
-    cursor: pointer;
-    margin-right: 10px;
-    width: fit-content;
-
-    &:focus {
-      display: none;
-    }
-
-    &:hover {
-      background-color: $--color-primary;
-    }
-  }
-}
-
 .icons-style {
   font-size: 30px;
   color: $--color-primary;

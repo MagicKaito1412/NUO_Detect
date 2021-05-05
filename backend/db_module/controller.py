@@ -57,6 +57,33 @@ def insert_ekg():
     return 'check registry_date', 400
 
 
+doctor_not_null_cols = set(['first_name', 'last_name', 'telephone'])
+@app.route('/insert_doctor', methods=['POST'])
+def insert_doctor():
+    data = request.get_json()
+    diff = doctor_not_null_cols - (doctor_not_null_cols & data.keys())
+    if not diff:
+        user_id, doctor_id = service.insert_doctor(data)
+        data['user_id'] = user_id
+        data['doctor_id'] = doctor_id
+        return jsonify(data), 200
+    s = str(tuple(diff.values()))
+    return f"check {s}", 400
+
+
+@app.route('/get_all_doctors', methods=['GET'])
+def get_all_doctors():
+    result = service.get_all_doctors()
+    return jsonify(result)
+
+
+@app.route('/get_doctors', methods=['POST'])
+def get_doctors():
+    filters = request.get_json()
+    result = service.get_doctors(filters)
+    return jsonify(result)
+
+
 @app.route('/get_all_patients', methods=['GET'])
 def get_all_patients():
     result = service.get_all_patients()
@@ -73,6 +100,13 @@ def get_patients():
 @app.route('/get_patient/<int:patient_id>', methods=['GET'])
 def get_patient(patient_id):
     result = service.get_patient(patient_id)
+    return jsonify(result)
+
+
+@app.route('/get_user', methods=['POST'])
+def get_user():
+    user_data = request.get_json()
+    result = service.get_user(user_data.get('login'), user_data.get('password'))
     return jsonify(result)
 
 

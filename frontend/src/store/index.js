@@ -11,7 +11,7 @@ const vuexSessionStorage = new VuexPersist({
 
 const state = {
     authUser: {}, //class User
-    authPerson: {}, //class User or Doctor or Patient
+    authEntity: {}, //class User or Doctor or Patient
     selectedPatient: {}, //class Patient
     selectedDoctor: {}, //class Doctor
     selectedEkg: {}, //class Ekg
@@ -19,7 +19,7 @@ const state = {
 
 const getters = {
     getAuthUser: state => state.authUser,
-    getAuthPerson: state => state.authPerson,
+    getAuthEntity: state => state.authEntity,
     getSelectedPatient: state => state.selectedPatient,
     getSelectedDoctor: state => state.selectedDoctor,
     getSelectedEkg: state => state.selectedEkg,
@@ -29,8 +29,8 @@ const mutations = {
     SET_AUTH_USER(state, value) {
         state.authUser = value
     },
-    SET_AUTH_PERSON(state, value) {
-        state.authPerson = value
+    SET_AUTH_ENTITY(state, value) {
+        state.authEntity = value
     },
     SET_SELECTED_PATIENT(state, value) {
         state.selectedPatient = value
@@ -43,7 +43,7 @@ const mutations = {
     },
     LOGOUT(state) {
         state.authUser = {}
-        state.authPerson = {}
+        state.authEntity = {}
         state.selectedPatient = {}
         state.selectedDoctor = {}
         state.selectedEkg = {}
