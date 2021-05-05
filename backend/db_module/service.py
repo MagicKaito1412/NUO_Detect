@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from io import StringIO
 import random
 import sys
 import psycopg2
@@ -16,11 +17,11 @@ from backend.utils.connect import db_transaction
 
 
 @db_transaction
-def export_csv(conn, cur, filename):
+def export_csv(conn, cur, file):
     def reldate(x):
         return relativedelta(x['Дата/Время съема ЭКГ/глюкозы'], x['Дата рождения']).years
 
-    data = pd.read_csv(filename)
+    data = pd.read_csv(StringIO(file.read().decode('utf-8')))
     data['Дата рождения'] = pd.to_datetime(data['Дата рождения'])
     data['Дата/Время съема ЭКГ/глюкозы'] = pd.to_datetime(
         data['Дата/Время съема ЭКГ/глюкозы'])
@@ -198,6 +199,17 @@ def insert_doctor(conn, cur, doctor_data):
     )
     conn.commit()
     return user_id, doctor_id
+
+
+@db_transaction
+def update_doctor(conn, cur, doctor_data):
+    doctor_id = doctor_data.pop('doctor_id')
+    subquery = ', '.join([f'{k}=%s' for k in doctor_data.keys()])
+    cur.execute(
+        f"UPDATE doctors SET {subquery} WHERE doctor_id=%s",
+        (tuple(doctor_data.values()) + (doctor_id,))
+    )
+    conn.commit()
 
 
 @db_transaction

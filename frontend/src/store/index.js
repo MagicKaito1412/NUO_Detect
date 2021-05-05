@@ -15,6 +15,7 @@ const state = {
     selectedPatient: {}, //class Patient
     selectedDoctor: {}, //class Doctor
     selectedEkg: {}, //class Ekg
+    progress: false
 };
 
 const getters = {
@@ -23,6 +24,7 @@ const getters = {
     getSelectedPatient: state => state.selectedPatient,
     getSelectedDoctor: state => state.selectedDoctor,
     getSelectedEkg: state => state.selectedEkg,
+    getProgress: state => state.progress
 };
 
 const mutations = {
@@ -47,6 +49,9 @@ const mutations = {
         state.selectedPatient = {}
         state.selectedDoctor = {}
         state.selectedEkg = {}
+    },
+    SET_PROGRESS(state, value) {
+        state.progress = value
     }
 };
 

@@ -105,8 +105,10 @@ export default {
             this.goTo('ekg')
         },
         loadEkgs() {
+            this.$store.commit('SET_PROGRESS', true)
             EkgService.loadEkgs(this.getPatient.patient_id).then(result => {
                 this.$set(this, 'tableData', result.data)
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         addEkg() {
@@ -117,15 +119,21 @@ export default {
         },
         save() {
             if (this.creationMode) {
+                this.$store.commit('SET_PROGRESS', true)
                 PatientService.saveNewPatient(this.patient).then(result => {
+                    this.$store.commit('SET_PROGRESS', false)
                     this.$set(this, 'creationMode', false);
                     this.$set(this, 'patient', result.data);
+                    this.showSMessage()
                     this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result))
                 })
                 return
             }
+            this.$store.commit('SET_PROGRESS', true)
             PatientService.updatePatient(this.patient).then(() => {
+                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'editMode', false)
+                this.showSMessage()
                 this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, this.patient))
             })
         },

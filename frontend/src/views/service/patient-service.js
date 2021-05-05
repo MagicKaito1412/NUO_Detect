@@ -22,8 +22,13 @@ export default {
         return axios.post(`${LOCALHOST}/update_patient`, dto, CONFIG)
     },
 
-    getPatientsFromCsv() {
-        //todo change to form data
-        return axios.post(`${LOCALHOST}/export_csv --form filename="D:/Documents/PycharmProjects/NUO_Detect/test_files/test_data_with_unk.csv"`)
+    getPatientsFromCsv(file) {
+        let formData = new FormData()
+        formData.append("file", file)
+        return axios.post(`${LOCALHOST}/export_csv`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     },
 }

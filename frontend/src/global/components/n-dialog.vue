@@ -85,6 +85,8 @@ export default {
 
 .pn-form-heading__inner {
     position: relative;
+    padding-right: 40px;
+    padding-left: 15px;
 
     .close-icon {
         position: absolute;

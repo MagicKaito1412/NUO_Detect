@@ -8,10 +8,6 @@
                     </div>
                     <divider/>
                     <div class="pa-5">
-                        <transition name="fade">
-                            <h4 v-show="errorFlag" class="ma-0 pb-3"
-                                style="color: firebrick;">{{ errorMessage }}</h4>
-                        </transition>
                         <n-input label="Логин"
                                  :value.sync="user.login"/>
                         <n-input label="Пароль"
@@ -38,31 +34,23 @@ export default {
     name: "home",
     data() {
         return {
-            user: new User(),
-            errorFlag: false
+            user: new User()
         }
     },
     methods: {
         loginClick() {
             if (this.user.login && this.user.password) {
+                this.$store.commit('SET_PROGRESS', true)
                 LoginService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
+                    this.$store.commit('SET_PROGRESS', false)
                     if (result.data) {
                         this.$store.commit('SET_AUTH_USER', result.data)
                         this.goTo('home')
-                        this.$set(this, 'errorFlag', false)
                     } else {
-                        this.$set(this, 'errorFlag', true)
-                        setTimeout((scope) => {
-                            scope.$set(scope, 'errorFlag', false)
-                        }, 3000, this)
+                        this.showEMessage('Неверный логин или пароль!')
                     }
                 })
             }
-        }
-    },
-    computed: {
-        errorMessage() {
-            return 'Неверный логин или пароль!'
         }
     }
 }
@@ -84,14 +72,6 @@ export default {
         box-shadow: 0 0 10px $--color-info-light;
         position: relative;
     }
-}
-
-.fade-enter-active, .fade-leave-active {
-    transition: opacity .5s;
-}
-
-.fade-enter, .fade-leave-to {
-    opacity: 0;
 }
 
 </style>

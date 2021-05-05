@@ -20,8 +20,7 @@ export default {
         return axios.post(`${LOCALHOST}/insert_doctor`, dto, CONFIG)
     },
 
-    updateDoctor() {
-         // return axios.post(`${LOCALHOST}/update_doctor`, dto, CONFIG)
-        //todo add after back
+    updateDoctor(dto) {
+         return axios.post(`${LOCALHOST}/update_doctor`, dto, CONFIG)
     },
 }

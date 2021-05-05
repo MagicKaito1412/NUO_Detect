@@ -12,10 +12,15 @@
                          :value.sync="searchOptions.middle_name"/>
             </div>
             <template slot="buttons">
-                <n-button
-                    @click="getPatientsFromCsv"
-                    label="Загрузить из CSV"
+                <input
+                    accept=".csv"
+                    @change="selectFile"
+                    ref="fileInput"
+                    style="display:none;"
+                    type="file"
                 />
+                <n-button @click="$refs.fileInput.click()"
+                          label="Загрузить из CSV"/>
                 <n-button
                     @click="createNew"
                     label="Зарегистрировать пациента"
@@ -39,25 +44,41 @@ export default {
     },
     methods: {
         loadPatients() {
+            this.$store.commit('SET_PROGRESS', true)
             PatientService.loadPatients().then(result => {
+                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'tableData', result.data)
             })
         },
         reloadData() {
+            this.$store.commit('SET_PROGRESS', true)
             PatientService.loadFilteredPatients(this.searchOptions).then(result => {
+                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'tableData', result.data)
             })
         },
         rowClick(item) {
+            this.$store.commit('SET_PROGRESS', true)
             PatientService.getPatientById(item.patient_id).then(result => {
+                this.$store.commit('SET_PROGRESS', false)
                 this.$store.commit('SET_SELECTED_PATIENT', result.data)
                 this.goTo('patient')
             })
         },
-        getPatientsFromCsv() {
-            PatientService.getPatientsFromCsv().then(result => {
-                //todo add file selection later
-                console.log('result', result.data)
+        selectFile(event) {
+            this.getPatientsFromCsv(event.target.files);
+            this.$nextTick(() => {
+                if (this.$refs.fileInput) {
+                    this.$refs.fileInput.value = null;
+                }
+            });
+        },
+        getPatientsFromCsv(files) {
+            let file = files[0]
+            this.$store.commit('SET_PROGRESS', true)
+            PatientService.getPatientsFromCsv(file).then(() => {
+                this.$store.commit('SET_PROGRESS', false)
+                this.reloadData()
             })
         },
         createNew() {

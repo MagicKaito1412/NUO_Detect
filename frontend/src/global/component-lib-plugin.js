@@ -5,6 +5,7 @@ import NDialog from './components/n-dialog'
 import NTable from './components/n-table'
 import NInput from './components/n-input'
 import NButton from './components/n-button'
+import NLoader from './components/n-loader'
 
 export default {
     install(Vue) {
@@ -15,5 +16,6 @@ export default {
         Vue.component(NTable.name, NTable)
         Vue.component(NInput.name, NInput)
         Vue.component(NButton.name, NButton)
+        Vue.component(NLoader.name, NLoader)
     }
 }

@@ -41,3 +41,29 @@
     color: $--color-primary-dark;
   }
 }
+
+.custom-notification {
+  position: absolute;
+  top: 80px !important;
+  font-size: 12px;
+  right: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-radius: 5px;
+  border: 1px solid $--color-info-light;
+  color: $--color-black-lighter;
+  opacity: 80%;
+
+  &.success {
+    background-color: $--color-success-light;
+  }
+  &.error {
+    background-color: $--color-error-light;
+  }
+  &.info {
+    background-color: $--color-info-lighter;
+  }
+  &.warning {
+    background-color: $--color-warning-light;
+  }
+}

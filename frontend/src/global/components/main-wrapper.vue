@@ -35,8 +35,14 @@
             <span style="white-space: pre-wrap">{{ content }}</span>
             <div class="justify-end" slot="footer">
                 <div class="primary-button flr justify-c mt-3">
-                    <el-button class="width-11" @click="train">Продолжить</el-button>
-                    <el-button class="width-11" @click="close">Отмена</el-button>
+                    <n-button
+                        @click="train"
+                        label="Продолжить"
+                    />
+                    <n-button
+                        @click="close"
+                        label="Отмена"
+                    />
                 </div>
             </div>
         </n-dialog>

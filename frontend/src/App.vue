@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <n-loader/>
         <router-view/>
     </div>
 </template>

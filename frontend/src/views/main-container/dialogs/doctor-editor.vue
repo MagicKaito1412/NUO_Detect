@@ -1,6 +1,6 @@
 <template>
-    <n-dialog :visible="visible" :title="title" @close="close">
-        <div class="flr justify-sb">
+    <n-dialog :visible="visible" :title="title" @close="close" class="doctor-editor">
+        <div class="flc justify-sb">
             <n-input
                 :value.sync="doctor.last_name"
                 @keyup.enter.native.prevent="save"
@@ -44,7 +44,7 @@
 
 <script>
 import {Doctor} from "../../service/models";
-import Service from '../../service/doctor-service'
+import DoctorService from '../../service/doctor-service'
 
 export default {
     name: "doctor-editor",
@@ -85,14 +85,21 @@ export default {
         },
         save() {
             if (this.createMode) {
-                Service.saveNewDoctor(this.doctor).then(result => {
+                this.$store.commit('SET_PROGRESS', true)
+                DoctorService.saveNewDoctor(this.doctor).then(result => {
                     this.$set(this, 'doctor', result.data);
                 }).finally(() => {
                     this.close()
+                    this.$store.commit('SET_PROGRESS', false)
                 })
             } else {
-                //todo
-                Service.updateDoctor()
+                this.$store.commit('SET_PROGRESS', true)
+                DoctorService.updateDoctor(this.doctor).then(() => {
+                   this.showSMessage()
+                }).finally(() => {
+                    this.close()
+                    this.$store.commit('SET_PROGRESS', false)
+                })
             }
         },
         initEditFields() {
@@ -117,6 +124,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+.doctor-editor {
+    .pn-form {
+        width: 30%;
+    }
+}
 </style>

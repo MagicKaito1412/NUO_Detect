@@ -9,8 +9,7 @@ def info():
 
 @app.route('/export_csv', methods=['POST'])
 def export_csv():
-    filename = request.form.get('filename')
-    service.export_csv(filename)
+    service.export_csv(request.files['file'])
     return 'OK', 200
 
 
@@ -69,6 +68,15 @@ def insert_doctor():
         return jsonify(data), 200
     s = str(tuple(diff.values()))
     return f"check {s}", 400
+
+
+@app.route('/update_doctor', methods=['POST'])
+def update_doctor():
+    data = request.get_json()
+    if data.get('doctor_id'):
+        service.update_doctor(data)
+        return 'OK', 200
+    return 'check doctor_id', 400
 
 
 @app.route('/get_all_doctors', methods=['GET'])

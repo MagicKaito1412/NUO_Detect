@@ -1,6 +1,5 @@
 from backend.model_training import app, service
-from flask import request, jsonify
-import requests
+from flask import jsonify
 
 
 @app.route('/train', methods=['POST'])

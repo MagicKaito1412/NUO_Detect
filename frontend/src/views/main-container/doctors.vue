@@ -19,7 +19,9 @@
                     label="Зарегистировать нового"/>
             </template>
         </n-table>
-        <doctor-editor :visible.sync="showDialog" :createMode.sync="createMode"/>
+        <doctor-editor :visible.sync="showDialog"
+                       :createMode.sync="createMode"
+                       @reloadData="reloadData"/>
     </div>
 </template>
 
@@ -41,13 +43,17 @@ export default {
     },
     methods: {
         loadDoctors() {
+            this.$store.commit('SET_PROGRESS', true)
             Service.loadDoctors().then(result => {
                 this.$set(this, 'tableData', result.data)
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         reloadData() {
+            this.$store.commit('SET_PROGRESS', true)
             Service.loadFilteredDoctors(this.searchOptions).then(result => {
                 this.$set(this, 'tableData', result.data)
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         rowClick(item) {
