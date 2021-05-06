@@ -12,7 +12,12 @@
         </div>
         <el-table class="table-class soft-border"
                   :data="tableData"
+                  @selection-change="handleSelectionChange"
                   @row-click="(row) => $emit('rowClick', row)">
+            <el-table-column v-if="withCheckbox"
+                             type="selection"
+                             class="centered-cell"
+            />
             <el-table-column v-for="(column, index) in columns"
                              :key="index"
                              :prop="column.key"
@@ -38,6 +43,10 @@ export default {
             type: Boolean,
             default: true
         },
+        withCheckbox: {
+            type: Boolean,
+            default: false
+        },
         showReloadButton: {
             type: Boolean,
             default: true
@@ -46,6 +55,13 @@ export default {
             type: String,
             default: "Искать"
         },
+    },
+    methods: {
+        handleSelectionChange(val) {
+            if (this.withCheckbox) {
+                this.$emit('handleSelectionChange', val)
+            }
+        }
     }
 }
 </script>

@@ -5,10 +5,13 @@
                  @rowClick="rowClick" @reloadData="reloadData">
             <div class="flr mb-2 justify-sb">
                 <n-input label="Фамилия"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.last_name"/>
                 <n-input label="Имя"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.first_name"/>
                 <n-input label="Отчество"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.middle_name"/>
             </div>
             <template slot="buttons">
@@ -25,14 +28,19 @@
                     @click="createNew"
                     label="Зарегистрировать пациента"
                 />
+                <n-button
+                    :disabled="disableClearButton"
+                    @click="resetSearchOptions"
+                    label="Очистить"
+                />
             </template>
         </n-table>
     </div>
 </template>
 
 <script>
-import PatientService from '../service/patient-service'
-import {PATIENTS_TABLE_HEADERS} from "../service/constants";
+import PatientService from '../../service/patient-service'
+import {PATIENTS_TABLE_HEADERS} from "../../service/constants";
 
 export default {
     name: "patients",
@@ -84,11 +92,19 @@ export default {
         createNew() {
             this.$store.commit('SET_SELECTED_PATIENT', {})
             this.goTo('patient', {creationMode: true})
+        },
+        resetSearchOptions() {
+            this.$set(this, 'searchOptions', {})
         }
     },
     computed: {
         columns() {
             return Array.from(PATIENTS_TABLE_HEADERS)
+        },
+        disableClearButton() {
+            return !this.searchOptions.last_name
+            && !this.searchOptions.first_name
+            && !this.searchOptions.middle_name
         }
     },
     mounted() {

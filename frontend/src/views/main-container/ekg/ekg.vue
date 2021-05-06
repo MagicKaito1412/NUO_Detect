@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {EKG} from "../service/models";
+import {EKG} from "../../service/models";
 // import Service from "../service/service";
 
 export default {

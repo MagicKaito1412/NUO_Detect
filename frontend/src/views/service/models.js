@@ -17,6 +17,7 @@ export class Patient {
     weight
     height
     has_nuo
+    telephone
     prob_log_reg
     prob_rnd_forest
     prob_log_svm

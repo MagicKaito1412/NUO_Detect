@@ -18,7 +18,7 @@ ALTER TABLE public.users
     OWNER to u1;
 
 INSERT INTO public.users (user_id, password, login, access_level)
-    VALUES (nextval(pg_get_serial_sequence('users', 'user_id')), 'admin1', 'admin1', 1);
+    VALUES (nextval(pg_get_serial_sequence('users', 'user_id')), 'admin', 'admin0000', 1);
 
 -- Table: public.patients
 
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS public.patients
     policy_num      character varying(16) COLLATE pg_catalog."default" NOT NULL,
     email           character varying(50) COLLATE pg_catalog."default",
     has_nuo         integer,
+    telephone   character varying(19),
     prob_log_reg    real,
     prob_rnd_forest real,
     prob_log_svm    real,
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS public.doctors
     last_name   character varying(50) COLLATE pg_catalog."default" NOT NULL,
     middle_name character varying(50) COLLATE pg_catalog."default",
     cabinet     real,
-    telephone   character varying(11)                              NOT NULL,
+    telephone   character varying(19)                              NOT NULL,
     email       character varying(50) COLLATE pg_catalog."default",
     CONSTRAINT doctors_pkey PRIMARY KEY (doctor_id),
     CONSTRAINT doctors_user_id_key UNIQUE (user_id),

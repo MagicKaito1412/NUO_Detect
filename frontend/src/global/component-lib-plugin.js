@@ -6,6 +6,7 @@ import NTable from './components/n-table'
 import NInput from './components/n-input'
 import NButton from './components/n-button'
 import NLoader from './components/n-loader'
+import NDatePicker from './components/n-date-picker'
 
 export default {
     install(Vue) {
@@ -17,5 +18,6 @@ export default {
         Vue.component(NInput.name, NInput)
         Vue.component(NButton.name, NButton)
         Vue.component(NLoader.name, NLoader)
+        Vue.component(NDatePicker.name, NDatePicker)
     }
 }

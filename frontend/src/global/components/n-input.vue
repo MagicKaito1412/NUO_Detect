@@ -1,12 +1,23 @@
 <template>
     <div :class="`flr mb-2 align-c ${spaceBetween ? 'justify-sb' : 'mr-' + mrNum}`">
-        <span class="mr-2">{{ label }}</span>
-        <el-input :class="`input-width-${250}`"
+        <span class="mr-2" v-if="label">{{ label }}</span>
+        <el-input :class="`input-width-${inputWidth}`"
                   :readonly="readonly"
                   :type="type"
+                  :placeholder="placeholder"
                   :maxlength="maxlength"
                   :show-password="password"
-                  v-model="innerValue"/>
+                  v-mask="mask"
+                  v-model="innerValue"
+                  v-if="mask"/>
+        <el-input :class="`input-width-${inputWidth}`"
+                  :readonly="readonly"
+                  :type="type"
+                  :placeholder="placeholder"
+                  :maxlength="maxlength"
+                  :show-password="password"
+                  v-model="innerValue"
+                  v-else/>
     </div>
 </template>
 
@@ -43,11 +54,18 @@ export default {
         },
         label: {
             type: String,
-            default: ''
+            default: null
         },
         type: {
             type: String,
             default: ''
+        },
+        placeholder: {
+            type: String,
+            default: ''
+        },
+        mask: {
+            type: String,
         }
     },
     data() {
@@ -57,7 +75,7 @@ export default {
     },
     watch: {
         value(val) {
-           this.$set(this, 'innerValue', val)
+            this.$set(this, 'innerValue', val)
         },
         innerValue(val) {
             this.$emit('update:value', val)

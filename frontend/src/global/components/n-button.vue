@@ -23,7 +23,7 @@ export default {
         },
         type: {
             type: String,
-            default: 'primary' //primary, default
+            default: 'primary' //primary, default, error
         },
         label: {
             type: String,
@@ -39,6 +39,7 @@ export default {
             return {
                 ['disabled-button']: this.disabled,
                 ['primary-button']: this.type === 'primary',
+                ['error-button']: this.type === 'error',
                 [`${this.customClass}`]: this.customClass
             }
         }
@@ -63,10 +64,21 @@ export default {
         }
     }
 
+    .error-button {
+        background-color: $--color-danger;
+        color: white;
+        border: 1px solid $--color-danger-dark;
+
+        &:hover {
+            background-color: $--color-danger-dark;
+        }
+    }
+
     .disabled-button {
         background-color: $--color-primary-lighter;
         color: $--color-info-lighter;
-        border: 1px solid $--color-info;
+        border: 1px solid $--color-info-light;
+        text-shadow: 1px 1px 1px $--color-info;
         cursor: not-allowed !important;
 
         &:hover {

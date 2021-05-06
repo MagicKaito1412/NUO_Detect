@@ -5,6 +5,9 @@ export const CONFIG = {
     }
 }
 
+export const TELEPHONE_PATTERN = '+ 7 (###) ###-##-##'
+export const POLICY_PATTERN = '#### #### #### ####'
+
 export const PATIENTS_TABLE_HEADERS = [
     {
         title: "НОМЕР ПАЦИЕНТА",

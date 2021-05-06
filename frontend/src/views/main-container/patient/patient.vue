@@ -18,7 +18,7 @@
                              :value.sync="patient.gender"/>
                     <n-input label="Вес (кг)"
                              class="mr-5"
-                             type="number"
+                             mask="###"
                              :readonly="viewMode"
                              :value.sync="patient.weight"/>
                     <div class="mt-10">
@@ -55,13 +55,16 @@
                              :readonly="viewMode"
                              :value.sync="patient.first_name"/>
                     <n-input label="Номер полиса"
+                             :mask="policyMask"
                              :readonly="viewMode"
                              :value.sync="patient.policy_num"/>
                     <n-input label="Возраст"
                              :readonly="viewMode"
+                             mask="###"
                              :value.sync="patient.age"/>
                     <n-input label="Рост (см)"
                              :readonly="viewMode"
+                             mask="###"
                              :value.sync="patient.height"/>
                 </div>
             </div>
@@ -83,10 +86,10 @@
 </template>
 
 <script>
-import PatientService from '../service/patient-service'
-import EkgService from '../service/ekg-service'
-import {EKGS_TABLE_HEADERS} from "../service/constants"
-import {Patient} from "../service/models";
+import PatientService from '../../service/patient-service'
+import EkgService from '../../service/ekg-service'
+import {EKGS_TABLE_HEADERS, POLICY_PATTERN} from "../../service/constants"
+import {Patient} from "../../service/models";
 
 export default {
     name: "patient",
@@ -181,6 +184,9 @@ export default {
         },
         viewMode() {
             return !this.editMode && !this.creationMode
+        },
+        policyMask() {
+            return POLICY_PATTERN
         }
     },
     mounted() {

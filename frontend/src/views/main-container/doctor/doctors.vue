@@ -2,21 +2,40 @@
     <div>
         <h3>Врачи, зарегистрированные в системе</h3>
         <n-table :tableData="tableData" :columns="columns"
-                 @rowClick="rowClick" @reloadData="reloadData">
+                 :with-checkbox="true"
+                 @handleSelectionChange="handleSelectionChange"
+                 @rowClick="rowClick"
+                 @reloadData="reloadData">
             <div class="flr mb-2 justify-sb">
                 <n-input label="Фамилия"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.last_name"/>
                 <n-input label="Имя"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.first_name"/>
                 <n-input label="Отчество"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.middle_name"/>
                 <n-input label="Номер телефона"
+                         mask="###########"
+                         @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.telephone"/>
             </div>
             <template slot="buttons">
                 <n-button
                     @click="createNew"
                     label="Зарегистировать нового"/>
+                <n-button
+                    :disabled="disableClearButton"
+                    @click="resetSearchOptions"
+                    label="Очистить"
+                />
+                <n-button
+                    :disabled="disableRemoveButton"
+                    type="error"
+                    @click="removeList"
+                    label="Удалить из системы"
+                />
             </template>
         </n-table>
         <doctor-editor :visible.sync="showDialog"
@@ -26,9 +45,9 @@
 </template>
 
 <script>
-import Service from '../service/doctor-service'
-import {DOCTORS_TABLE_HEADERS} from "../service/constants";
-import DoctorEditor from './dialogs/doctor-editor'
+import Service from '../../service/doctor-service'
+import {DOCTORS_TABLE_HEADERS} from "../../service/constants";
+import DoctorEditor from './doctor-editor'
 
 export default {
     name: "doctors",
@@ -39,6 +58,7 @@ export default {
             tableData: [],
             showDialog: false,
             createMode: false,
+            checked: []
         }
     },
     methods: {
@@ -63,15 +83,32 @@ export default {
             this.$set(this, 'showDialog', true)
         },
         createNew() {
-            //todo remove sync or wtf with row click
             this.$set(this, 'createMode', true)
             this.$set(this, 'showDialog', true)
+        },
+        resetSearchOptions() {
+            this.$set(this, 'searchOptions', {})
+        },
+        handleSelectionChange(checked) {
+            this.$set(this, 'checked', checked)
+        },
+        removeList() {
+            //todo
         }
     },
     computed: {
         columns() {
             return Array.from(DOCTORS_TABLE_HEADERS)
-        }
+        },
+        disableClearButton() {
+            return !this.searchOptions.last_name
+            && !this.searchOptions.first_name
+            && !this.searchOptions.middle_name
+            && !this.searchOptions.telephone //todo change to cabinet
+        },
+        disableRemoveButton() {
+            return !this.checked || !this.checked.length
+        },
     },
     mounted() {
         this.loadDoctors()

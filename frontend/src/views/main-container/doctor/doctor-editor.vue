@@ -23,9 +23,10 @@
                 label="Кабинет"
             />
             <n-input
-                :maxlength="11"
                 :value.sync="doctor.telephone"
                 @keyup.enter.native.prevent="save"
+                :placeholder="telephoneMask"
+                :mask="telephoneMask"
                 label="Телефон"
             />
             <n-input
@@ -38,6 +39,11 @@
             <n-button
                 @click="save"
                 label="Сохранить"/>
+            <n-button
+                v-if="!createMode"
+                @click="remove"
+                type="error"
+                label="Удалить"/>
         </div>
     </n-dialog>
 </template>
@@ -45,6 +51,7 @@
 <script>
 import {Doctor} from "../../service/models";
 import DoctorService from '../../service/doctor-service'
+import {TELEPHONE_PATTERN} from "../../service/constants";
 
 export default {
     name: "doctor-editor",
@@ -68,13 +75,10 @@ export default {
             return this.$store.getters.getSelectedDoctor
         },
         title() {
-            if (this.createMode) {
-                return `Регистрация нового пользователя`
-            }
-            let middleName = this.getSelectedDoctor.middle_name ? this.getSelectedDoctor.middle_name : ''
-            let fullName = `${this.getSelectedDoctor.last_name} ${this.getSelectedDoctor.first_name}
-            ${middleName} (${this.getSelectedDoctor.doctor_id})`
-            return `Редактирование пользователя ${fullName}`
+            return this.createMode ? `Регистрация нового пользователя` : `Редактирование пользователя`
+        },
+        telephoneMask() {
+            return TELEPHONE_PATTERN
         }
     },
     methods: {
@@ -101,6 +105,9 @@ export default {
                     this.$store.commit('SET_PROGRESS', false)
                 })
             }
+        },
+        remove() {
+            //todo
         },
         initEditFields() {
             this.$nextTick(() => {
