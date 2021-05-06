@@ -118,6 +118,13 @@ def get_user():
     return jsonify(result)
 
 
+@app.route('/get_entity', methods=['POST'])
+def get_entity():
+    user_data = request.get_json()
+    result = service.get_entity(user_data)
+    return jsonify(result)
+
+
 @app.route('/get_patient_ekgs/<string:patient_id>', methods=['GET'])
 def get_patient_ekgs(patient_id):
     result = service.get_patient_ekgs(patient_id)

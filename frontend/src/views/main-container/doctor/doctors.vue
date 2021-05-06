@@ -66,6 +66,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             Service.loadDoctors().then(result => {
                 this.$set(this, 'tableData', result.data)
+            }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
             })
         },
@@ -73,6 +74,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             Service.loadFilteredDoctors(this.searchOptions).then(result => {
                 this.$set(this, 'tableData', result.data)
+            }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
             })
         },

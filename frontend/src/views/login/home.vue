@@ -42,13 +42,14 @@ export default {
             if (this.user.login && this.user.password) {
                 this.$store.commit('SET_PROGRESS', true)
                 LoginService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
-                    this.$store.commit('SET_PROGRESS', false)
                     if (result.data) {
                         this.$store.commit('SET_AUTH_USER', result.data)
                         this.goTo('home')
                     } else {
                         this.showEMessage('Неверный логин или пароль!')
                     }
+                }).finally(() => {
+                    this.$store.commit('SET_PROGRESS', false)
                 })
             }
         }

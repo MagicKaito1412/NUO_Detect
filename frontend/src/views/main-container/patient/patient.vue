@@ -1,6 +1,33 @@
 <template>
     <div class="flc">
-        <h3>{{ title }}</h3>
+        <div class="flr justify-sb">
+            <h3>{{ title }}</h3>
+            <div class="flr" v-if="fromDoctor">
+                <template v-if="viewMode">
+                    <n-button
+                        @click="edit"
+                        label="Редактировать личные данные"
+                    />
+                </template>
+                <template v-else>
+                    <n-button
+                        :disabled="disableSaveButton"
+                        @click="save"
+                        label="Сохранить"
+                    />
+                    <n-button
+                        @click="cancel"
+                        label="Отменить"
+                    />
+                </template>
+                <n-button
+                    class="mr-0"
+                    :disabled="!viewMode"
+                    @click="addEkg"
+                    label="Добавить данные ЭКГ"
+                />
+            </div>
+        </div>
         <div class="patient">
             <div class="flr">
                 <div class="flc">
@@ -17,10 +44,10 @@
                              :readonly="viewMode"
                              :value="genderText"
                              v-if="viewMode"/>
-                        <div class="flr justify-sb mb-3" v-else>
-                            <span>Пол</span>
-                            <div class="mr-5">
-                                 <el-radio v-model="radioGender"
+                    <div class="flr justify-sb mb-3" v-else>
+                        <span>Пол</span>
+                        <div class="mr-5">
+                            <el-radio v-model="radioGender"
                                       class="mr-2"
                                       label="1">
                                 Мужской
@@ -29,8 +56,8 @@
                                       label="2">
                                 Женский
                             </el-radio>
-                            </div>
                         </div>
+                    </div>
                     <n-input label="Вес (кг)"
                              class="mr-5"
                              mask="###"
@@ -56,26 +83,11 @@
                                 Нет
                             </el-radio>
                         </div>
-                    </div>
-                    <div class=" mt-3" v-if="viewMode">
                         <n-button
-                            @click="edit"
-                            label="Редактировать"
-                        />
-                        <n-button
+                            v-if="fromDoctor"
+                            :disabled="!viewMode"
                             @click="predict"
                             label="Расчитать вероятность НУО"
-                        />
-                    </div>
-                    <div class="flr mt-3" v-else>
-                        <n-button
-                            :disabled="disableSaveButton"
-                            @click="save"
-                            label="Сохранить"
-                        />
-                        <n-button
-                            @click="cancel"
-                            label="Отменить"
                         />
                     </div>
                 </div>
@@ -91,6 +103,7 @@
                     <!--todo add field-->
                     <n-date-picker
                         label="Дата рождения"
+                        :readonly="viewMode"
                     />
                     <n-input label="Возраст"
                              :readonly="viewMode"
@@ -102,19 +115,12 @@
                              :value.sync="patient.height"/>
                 </div>
             </div>
-            <div class="flr" style="flex-wrap: nowrap;" v-if="!creationMode">
-                <div class="primary-button ml-5">
-                    <n-button
-                        @click="addEkg"
-                        label="Добавить данные ЭКГ"
-                    />
-                </div>
-                <n-table :tableData="tableData"
-                         :columns="columns"
-                         :showFilters="false"
-                         class="width-8"
-                         @rowClick="rowClick"/>
-            </div>
+            <n-table :tableData="tableData"
+                     :columns="columns"
+                     :showFilters="false"
+                     class="width-4"
+                     @rowClick="rowClick"
+                     v-if="!creationMode"/>
         </div>
     </div>
 </template>
@@ -124,6 +130,7 @@ import PatientService from '../../service/patient-service'
 import EkgService from '../../service/ekg-service'
 import {EKGS_TABLE_HEADERS, POLICY_PATTERN} from "../../service/constants"
 import {Patient} from "../../service/models";
+import LoginService from "../../service/login-service";
 
 export default {
     name: "patient",
@@ -147,6 +154,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             EkgService.loadEkgs(this.getPatient.patient_id).then(result => {
                 this.$set(this, 'tableData', result.data)
+            }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
             })
         },
@@ -162,20 +170,22 @@ export default {
             if (this.creationMode) {
                 this.$store.commit('SET_PROGRESS', true)
                 PatientService.saveNewPatient(this.patient).then(result => {
-                    this.$store.commit('SET_PROGRESS', false)
                     this.$set(this, 'creationMode', false);
                     this.$set(this, 'patient', result.data);
                     this.showSMessage()
                     this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result))
+                }).finally(() => {
+                    this.$store.commit('SET_PROGRESS', false)
                 })
                 return
             }
             this.$store.commit('SET_PROGRESS', true)
             PatientService.updatePatient(this.patient).then(() => {
-                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'editMode', false)
                 this.showSMessage()
                 this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, this.patient))
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         cancel() {
@@ -224,7 +234,7 @@ export default {
         title() {
             let editSuffix = this.editMode ? '[Редактирование]' : ''
             let suffix = this.creationMode ? '[Регистрация нового]' : this.editMode ? editSuffix : ''
-            return this.getAuthUser.access_level === 2 ? `Данные пациента ${suffix}` : `Карточка пациента ${editSuffix}`
+            return this.getAuthUser.access_level === 2 ? `Данные пациента ${suffix}` : `Личные данные ${editSuffix}`
         },
         columns() {
             return Array.from(EKGS_TABLE_HEADERS)
@@ -235,19 +245,37 @@ export default {
         policyMask() {
             return POLICY_PATTERN
         },
+        fromDoctor() {
+            return this.$route.params.fromDoctor
+        },
         disableSaveButton() {
             //todo add required fields
             return false
         }
     },
     mounted() {
-        let routeCreationMode = this.$route.params.creationMode
-        this.$set(this, 'creationMode', routeCreationMode ? routeCreationMode : false)
-        if (!this.creationMode) {
-            this.loadEkgs()
-            this.$set(this, 'patient', Object.assign({}, this.getPatient))
-            this.$set(this, 'radioNuo', `${this.patient.has_nuo}`)
-            this.$set(this, 'radioGender', `${this.patient.gender}`)
+        if (this.fromDoctor) {
+            let routeCreationMode = this.$route.params.creationMode
+            this.$set(this, 'creationMode', routeCreationMode ? routeCreationMode : false)
+            if (!this.creationMode) {
+                this.loadEkgs()
+                this.$set(this, 'patient', Object.assign({}, this.getPatient))
+                this.$set(this, 'radioNuo', `${this.patient.has_nuo}`)
+                this.$set(this, 'radioGender', `${this.patient.gender}`)
+            }
+        } else {
+            if (!this.authEntity || !this.authEntity.user_id) {
+                let authUser = this.$store.getters.getAuthUser
+                this.$store.commit('SET_PROGRESS', true)
+                LoginService.getEntityByUser(authUser).then(result => {
+                    if (result) {
+                        this.$set(this, 'patient', result.data)
+                        this.$store.commit('SET_AUTH_ENTITY', Object.assign({}, this.patient))
+                    }
+                }).finally(() => {
+                    this.$store.commit('SET_PROGRESS', false)
+                })
+            }
         }
     }
 }

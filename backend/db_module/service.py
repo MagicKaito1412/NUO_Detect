@@ -356,6 +356,44 @@ def get_user(conn, cur, login, password):
 
 
 @db_transaction
+def get_entity(conn, cur, user):
+    user_id = user.get('user_id')
+    access_level = user.get('access_level')
+    if access_level == 1:
+        cur.execute(
+            "SELECT row_to_json(data) FROM "
+            "("
+            f"SELECT * "
+            "FROM users "
+            f"WHERE users.user_id = '{user_id}'"
+            ") data"
+        )
+    elif access_level == 2:
+        cur.execute(
+            "SELECT row_to_json(data) FROM "
+            "("
+            f"SELECT * "
+            "FROM doctors "
+            f"WHERE doctors.user_id = '{user_id}'"
+            ") data"
+        )
+    else:
+        cur.execute(
+            "SELECT row_to_json(data) FROM "
+            "("
+            f"SELECT * "
+            "FROM patients "
+            f"WHERE patients.user_id = '{user_id}'"
+            ") data"
+        )
+    data = None
+    finding = cur.fetchone()
+    if finding is not None:
+        data = finding[0]
+    return data
+
+
+@db_transaction
 def delete_patient(conn, cur, patient_id):
     cur.execute(f"SELECT user_id FROM patients WHERE patient_id = {patient_id}")
     user_id = cur.fetchone()[0]

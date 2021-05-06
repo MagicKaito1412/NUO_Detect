@@ -9,7 +9,7 @@ export default {
         })
     },
 
-    // getEntityByUser(user) {
-    //     //todo for all
-    // },
+    getEntityByUser(user) {
+        return axios.post(`${LOCALHOST}/get_entity`, user)
+    },
 }

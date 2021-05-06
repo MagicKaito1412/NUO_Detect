@@ -96,6 +96,11 @@ export default {
                 padding: 7px;
             }
         }
+
+        &__empty-block {
+            display: flex;
+            justify-content: center;
+        }
     }
 }
 </style>

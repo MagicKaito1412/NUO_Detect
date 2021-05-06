@@ -54,23 +54,29 @@ export default {
         loadPatients() {
             this.$store.commit('SET_PROGRESS', true)
             PatientService.loadPatients().then(result => {
-                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'tableData', result.data)
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         reloadData() {
             this.$store.commit('SET_PROGRESS', true)
             PatientService.loadFilteredPatients(this.searchOptions).then(result => {
-                this.$store.commit('SET_PROGRESS', false)
                 this.$set(this, 'tableData', result.data)
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         rowClick(item) {
             this.$store.commit('SET_PROGRESS', true)
             PatientService.getPatientById(item.patient_id).then(result => {
-                this.$store.commit('SET_PROGRESS', false)
                 this.$store.commit('SET_SELECTED_PATIENT', result.data)
-                this.goTo('patient')
+                this.goTo('patient', {
+                    creationMode: false,
+                    fromDoctor: true
+                })
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         selectFile(event) {
@@ -85,13 +91,17 @@ export default {
             let file = files[0]
             this.$store.commit('SET_PROGRESS', true)
             PatientService.getPatientsFromCsv(file).then(() => {
-                this.$store.commit('SET_PROGRESS', false)
                 this.reloadData()
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
             })
         },
         createNew() {
             this.$store.commit('SET_SELECTED_PATIENT', {})
-            this.goTo('patient', {creationMode: true})
+            this.goTo('patient', {
+                creationMode: true,
+                fromDoctor: true
+            })
         },
         resetSearchOptions() {
             this.$set(this, 'searchOptions', {})
@@ -103,8 +113,8 @@ export default {
         },
         disableClearButton() {
             return !this.searchOptions.last_name
-            && !this.searchOptions.first_name
-            && !this.searchOptions.middle_name
+                && !this.searchOptions.first_name
+                && !this.searchOptions.middle_name
         }
     },
     mounted() {
