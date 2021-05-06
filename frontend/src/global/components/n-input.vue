@@ -43,7 +43,7 @@ export default {
         },
         inputWidth: {
             type: Number,
-            default: 250
+            default: 240
         },
         maxlength: {
             type: Number,

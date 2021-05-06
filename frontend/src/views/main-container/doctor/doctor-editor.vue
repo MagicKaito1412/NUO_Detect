@@ -37,6 +37,7 @@
         </div>
         <div class="primary-button flr justify-c mt-3">
             <n-button
+                :disabled="disableSaveButton"
                 @click="save"
                 label="Сохранить"/>
             <n-button
@@ -79,6 +80,10 @@ export default {
         },
         telephoneMask() {
             return TELEPHONE_PATTERN
+        },
+        disableSaveButton() {
+            //todo add required fields
+            return false
         }
     },
     methods: {

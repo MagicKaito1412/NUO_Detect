@@ -1,5 +1,10 @@
 @import "spacing";
 @import "typography";
+@import "date-picker";
+@import "~element-ui/packages/theme-chalk/src/notification";
+@import "~element-ui/packages/theme-chalk/src/icon";
+@import "~element-ui/packages/theme-chalk/src/radio";
+
 
 @for $i from 0 through 12 {
   .width-#{$i} {
@@ -18,11 +23,40 @@
   }
 }
 
+
+.el-input {
+  position: relative;
+
+  i[class^="el-icon-"], i[class*=" el-icon-"] {
+    position: absolute;
+    right: 0;
+    padding: 4px;
+    color: $--color-primary;
+  }
+
+  ::placeholder {
+    padding-right: 24px;
+    color: $--color-info-light;
+    font-family: 'droid_sans', sans-serif;
+  }
+}
+
 .el-input__inner {
-  border: 1px solid $--color-info;
+  padding-right: 24px;
+  padding-left: 10px;
+  border: 1px solid $--color-info-light;
   border-radius: 3px;
-  outline-color: $--color-primary;
+  outline: none;
   height: 20px;
+  color: $--color-black-lighter !important;
+
+  &:hover {
+    border: 1px solid $--color-primary-lighter;
+  }
+
+  &:focus {
+    border: 1px solid $--color-primary;
+  }
 }
 
 .cp {
@@ -38,6 +72,7 @@
 .icons-style {
   font-size: 30px;
   color: $--color-primary;
+
   &:hover {
     color: $--color-primary-dark;
   }
@@ -51,22 +86,7 @@
   padding-left: 20px;
   padding-right: 20px;
   border-radius: 5px;
-  border: 1px solid $--color-info-light;
   color: $--color-black-lighter;
-  opacity: 80%;
-
-  &.success {
-    background-color: $--color-success-light;
-  }
-  &.error {
-    background-color: $--color-error-light;
-  }
-  &.info {
-    background-color: $--color-info-lighter;
-  }
-  &.warning {
-    background-color: $--color-warning-light;
-  }
 }
 
 html {
@@ -76,9 +96,15 @@ html {
 h1, h2, h3, h4 {
   font-family: "Arial Narrow", sans-serif;
 }
+
 span {
   font-family: 'cmu_brightroman', monospace;
 }
+
 .cell {
+  font-family: "Arial Narrow", sans-serif;
+}
+
+.el-date-table {
   font-family: "Arial Narrow", sans-serif;
 }

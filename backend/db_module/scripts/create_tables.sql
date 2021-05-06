@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS public.patients
     age             integer                                            NOT NULL,
     weight          integer                                            NOT NULL,
     height          integer                                            NOT NULL,
-    policy_num      character varying(16) COLLATE pg_catalog."default" NOT NULL,
+    policy_num      character varying(19) COLLATE pg_catalog."default" NOT NULL,
     email           character varying(50) COLLATE pg_catalog."default",
     has_nuo         integer,
     telephone   character varying(19),

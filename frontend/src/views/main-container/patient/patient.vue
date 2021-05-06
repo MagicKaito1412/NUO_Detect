@@ -15,19 +15,47 @@
                     <n-input label="Пол"
                              class="mr-5"
                              :readonly="viewMode"
-                             :value.sync="patient.gender"/>
+                             :value="genderText"
+                             v-if="viewMode"/>
+                        <div class="flr justify-sb mb-3" v-else>
+                            <span>Пол</span>
+                            <div class="mr-5">
+                                 <el-radio v-model="radioGender"
+                                      class="mr-2"
+                                      label="1">
+                                Мужской
+                            </el-radio>
+                            <el-radio v-model="radioGender"
+                                      label="2">
+                                Женский
+                            </el-radio>
+                            </div>
+                        </div>
                     <n-input label="Вес (кг)"
                              class="mr-5"
                              mask="###"
                              :readonly="viewMode"
                              :value.sync="patient.weight"/>
                     <div class="mt-10">
-                        <span v-if="viewMode">
-                            Есть нарушение углеводного обмена: {{ nuoText }}</span>
-                        <n-input v-if="!viewMode" label="Есть нарушение углеводного обмена"
-                                 class="mr-5"
-                                 :readonly="viewMode"
-                                 :value.sync="patient.has_nuo"/>
+                        <span class="mr-2">
+                            Есть нарушение углеводного обмена: {{ viewMode ? nuoText : '' }}
+                        </span>
+                        <div v-if="!viewMode" class="mr-5 mt-3">
+                            <el-radio v-model="radioNuo"
+                                      class="mr-2"
+                                      label="-1">
+                                Не определено
+                            </el-radio>
+                            <el-radio v-model="radioNuo"
+                                      class="mr-2"
+                                      label="1">
+                                Есть
+                            </el-radio>
+                            <el-radio v-model="radioNuo"
+                                      label="0">
+                                Нет
+                            </el-radio>
+                        </div>
                     </div>
                     <div class=" mt-3" v-if="viewMode">
                         <n-button
@@ -41,6 +69,7 @@
                     </div>
                     <div class="flr mt-3" v-else>
                         <n-button
+                            :disabled="disableSaveButton"
                             @click="save"
                             label="Сохранить"
                         />
@@ -55,9 +84,14 @@
                              :readonly="viewMode"
                              :value.sync="patient.first_name"/>
                     <n-input label="Номер полиса"
+                             :placeholder="policyMask"
                              :mask="policyMask"
                              :readonly="viewMode"
                              :value.sync="patient.policy_num"/>
+                    <!--todo add field-->
+                    <n-date-picker
+                        label="Дата рождения"
+                    />
                     <n-input label="Возраст"
                              :readonly="viewMode"
                              mask="###"
@@ -68,7 +102,7 @@
                              :value.sync="patient.height"/>
                 </div>
             </div>
-            <div class="flr" v-if="!creationMode">
+            <div class="flr" style="flex-wrap: nowrap;" v-if="!creationMode">
                 <div class="primary-button ml-5">
                     <n-button
                         @click="addEkg"
@@ -99,6 +133,8 @@ export default {
             patient: new Patient(),
             editMode: false,
             creationMode: false,
+            radioNuo: '-1',
+            radioGender: null, // 1-М, 2-Ж
         }
     },
     methods: {
@@ -121,6 +157,8 @@ export default {
             this.$set(this, 'editMode', true);
         },
         save() {
+            this.$set(this.patient, 'has_nuo', Number(this.radioNuo))
+            this.$set(this.patient, 'gender', Number(this.radioGender))
             if (this.creationMode) {
                 this.$store.commit('SET_PROGRESS', true)
                 PatientService.saveNewPatient(this.patient).then(result => {
@@ -165,6 +203,15 @@ export default {
             }
             return ''
         },
+        genderText() {
+            if (this.patient.gender === 1) {
+                return 'Мужской'
+            }
+            if (this.patient.has_nuo === 2) {
+                return 'Женский'
+            }
+            return ''
+        },
         getAuthUser() {
             return this.$store.getters.getAuthUser
         },
@@ -187,6 +234,10 @@ export default {
         },
         policyMask() {
             return POLICY_PATTERN
+        },
+        disableSaveButton() {
+            //todo add required fields
+            return false
         }
     },
     mounted() {
@@ -195,6 +246,8 @@ export default {
         if (!this.creationMode) {
             this.loadEkgs()
             this.$set(this, 'patient', Object.assign({}, this.getPatient))
+            this.$set(this, 'radioNuo', `${this.patient.has_nuo}`)
+            this.$set(this, 'radioGender', `${this.patient.gender}`)
         }
     }
 }

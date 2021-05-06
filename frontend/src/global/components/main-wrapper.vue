@@ -9,11 +9,15 @@
             <cardio-logo-generator :number="login ? 3 : 5"/>
             <div v-if="!login">
                 <template v-if="access_level === 2">
-                    <el-button class="mr-5 cp" v-if="$route.name !== 'patients'">
+                        <el-button class="mr-5 cp" v-if="$route.name !== 'patients'">
                         <i class="material-icons icons-style" @click="goTo('patients')">people</i>
                     </el-button>
-                    <el-button class="mr-5 cp">
-                        <i class="material-icons icons-style" @click="train">assessment</i>
+
+                    <el-button class="mr-5 pt-1 cp">
+                        <i class="el-icon-set-up icons-style" @click="train"/>
+<!--                        TODO decide here-->
+<!--                        <i class="material-icons icons-style" @click="train">assessment</i>-->
+<!--                        <i class="el-icon-s-operation icons-style" @click="train"/>-->
                     </el-button>
                     <el-button class="mr-5 cp">
                         <i class="material-icons icons-style" @click="doctorCard">account_box</i>

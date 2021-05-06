@@ -1,0 +1,29 @@
+@import "~element-ui/packages/theme-chalk/src/date-picker/date-picker";
+@import "~element-ui/packages/theme-chalk/src/date-picker/date-table";
+@import "~element-ui/packages/theme-chalk/src/date-picker/picker-panel";
+
+.el-picker-panel__content {
+  .el-date-table {
+    .today.m-cell {
+      div {
+        span {
+          border-radius: 5px !important;
+          background-color: $--color-primary-light-9;
+        }
+      }
+    }
+
+    .m-cell {
+      &:hover {
+        background-color: $--color-primary-light-9;
+        border-radius: 5px;
+      }
+
+      div {
+        span {
+          border-radius: 5px !important;
+        }
+      }
+    }
+  }
+}

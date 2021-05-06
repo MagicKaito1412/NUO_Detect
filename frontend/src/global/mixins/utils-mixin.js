@@ -16,7 +16,7 @@ export default {
                 message: message,
                 duration: duration,
                 position: "top-right",
-                customClass: `custom-notification ${type}`
+                customClass: `custom-notification`
             })
         },
         showSMessage(title = 'Данные успешно сохранены!', message, duration) {
