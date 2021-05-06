@@ -49,6 +49,9 @@ export default {
 <style lang="scss">
 .n-button {
     margin-top: 12px;
+    span {
+      font-size: 14px;
+    }
 
     .primary-button {
         background-color: $--color-primary;

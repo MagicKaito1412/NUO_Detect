@@ -1,4 +1,5 @@
 @import "spacing";
+@import "typography";
 
 @for $i from 0 through 12 {
   .width-#{$i} {
@@ -66,4 +67,18 @@
   &.warning {
     background-color: $--color-warning-light;
   }
+}
+
+html {
+  color: $--color-black-lighter;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Arial Narrow", sans-serif;
+}
+span {
+  font-family: 'cmu_brightroman', monospace;
+}
+.cell {
+  font-family: "Arial Narrow", sans-serif;
 }
