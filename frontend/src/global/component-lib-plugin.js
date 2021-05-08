@@ -7,6 +7,8 @@ import NInput from './components/n-input'
 import NButton from './components/n-button'
 import NLoader from './components/n-loader'
 import NDatePicker from './components/n-date-picker'
+import NTimePicker from './components/n-time-picker'
+import NSubHeader from './components/n-sub-header'
 
 export default {
     install(Vue) {
@@ -19,5 +21,7 @@ export default {
         Vue.component(NButton.name, NButton)
         Vue.component(NLoader.name, NLoader)
         Vue.component(NDatePicker.name, NDatePicker)
+        Vue.component(NTimePicker.name, NTimePicker)
+        Vue.component(NSubHeader.name, NSubHeader)
     }
 }

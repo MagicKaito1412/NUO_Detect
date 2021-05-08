@@ -1,15 +1,15 @@
 import axios from "axios";
-import {LOCALHOST} from "./constants";
+import {DB_LOCALHOST} from "./constants";
 
 export default {
     getUserByLoginPassword(login, password) {
-        return axios.post(`${LOCALHOST}/get_user`, {
+        return axios.post(`${DB_LOCALHOST}/get_user`, {
             login: login,
             password: password
         })
     },
 
     getEntityByUser(user) {
-        return axios.post(`${LOCALHOST}/get_entity`, user)
+        return axios.post(`${DB_LOCALHOST}/get_entity`, user)
     },
 }

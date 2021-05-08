@@ -66,7 +66,7 @@ class EKG:
                                     # всех NN-интервалов (pNN50)
     si = db.Column(name='si', type_=FLOAT)  # Индекс напряжения (SI)
     sati = db.Column(name='sati', type_=FLOAT)  # Индекс симпато-адреналового тонуса (SATI)
-    rmi = db.Column(name='rmi', type_=FLOAT)  # 'Индекс дыхательной модуляции (RMI)
+    rmi = db.Column(name='rmi', type_=FLOAT)  # Индекс дыхательной модуляции (RMI)
     kurtosis = db.Column(name='kurtosis', type_=FLOAT)  # Коэффициент эксцесса NN-интервалов (Kurtosis)
     cv = db.Column(name='cv', type_=FLOAT)  # Коэффициент вариации NN-интервалов (CV)
     rmssd = db.Column(name='rmssd',

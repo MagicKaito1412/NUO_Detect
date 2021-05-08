@@ -55,13 +55,13 @@ export default {
 
     },
 
-    mounted() {
-        disableBodyScroll(this.$el)
-    },
-
-    destroyed() {
-        if (process.browser) {
-            clearAllBodyScrollLocks()
+    watch: {
+        visible(val) {
+            if (val) {
+                disableBodyScroll(this.$el)
+            } else {
+                clearAllBodyScrollLocks()
+            }
         }
     }
 }
@@ -94,6 +94,9 @@ export default {
         padding-right: 15px;
         cursor: pointer;
         color: $--color-primary;
+        &:hover {
+            color: $--color-primary-dark;
+        }
     }
 }
 
@@ -131,14 +134,10 @@ export default {
     flex-direction: column;
 }
 
-/* TODO: Стили взяты из примера с оф. сайта, конечно их надо переделать */
-
-/* https://jsfiddle.net/achillesp/1rpf6fme/ */
-
 /* Фон при открытом модальном окне */
 .modal-mask {
     position: fixed;
-    z-index: 999899999;
+    z-index: 2000;
     top: 0;
     left: 0;
     width: 100%;

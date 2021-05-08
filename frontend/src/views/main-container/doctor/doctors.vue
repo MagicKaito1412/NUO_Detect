@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import Service from '../../service/doctor-service'
+import Service from './doctor-service'
 import {DOCTORS_TABLE_HEADERS} from "../../service/constants";
 import DoctorEditor from './doctor-editor'
 
@@ -79,10 +79,12 @@ export default {
             })
         },
         rowClick(item) {
-            //todo add controller get doctor by id
-            Service.getDoctorById()
-            this.$store.commit('SET_SELECTED_DOCTOR', item)
-            this.$set(this, 'showDialog', true)
+            Service.getDoctorById(item.doctor_id).then(result => {
+                if (result) {
+                    this.$store.commit('SET_SELECTED_DOCTOR', result.data)
+                    this.$set(this, 'showDialog', true)
+                }
+            })
         },
         createNew() {
             this.$set(this, 'createMode', true)
@@ -95,7 +97,7 @@ export default {
             this.$set(this, 'checked', checked)
         },
         removeList() {
-            //todo
+            //todo after back
         }
     },
     computed: {

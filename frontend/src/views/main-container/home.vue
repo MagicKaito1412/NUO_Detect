@@ -19,7 +19,6 @@ export default {
     mounted() {
         let authUser = this.$store.getters.getAuthUser
         this.$set(this, 'access_level', authUser.access_level)
-        //todo add back
         if (this.access_level === 1) { //super user
             this.goTo('doctors')
         } else if (this.access_level === 2) { //doctor

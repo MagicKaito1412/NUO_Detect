@@ -37,7 +37,6 @@
         </div>
         <div class="primary-button flr justify-c mt-3">
             <n-button
-                :disabled="disableSaveButton"
                 @click="save"
                 label="Сохранить"/>
             <n-button
@@ -51,7 +50,7 @@
 
 <script>
 import {Doctor} from "../../service/models";
-import DoctorService from '../../service/doctor-service'
+import DoctorService from './doctor-service'
 import {TELEPHONE_PATTERN} from "../../service/constants";
 
 export default {
@@ -80,10 +79,6 @@ export default {
         },
         telephoneMask() {
             return TELEPHONE_PATTERN
-        },
-        disableSaveButton() {
-            //todo add required fields
-            return false
         }
     },
     methods: {
@@ -91,28 +86,36 @@ export default {
             this.$emit('update:createMode', false)
             this.$emit('update:visible', false)
             this.$emit('reloadData')
+            this.$store.commit('SET_PROGRESS', false)
         },
         save() {
+            if (!this.validate()) {
+                this.showWMessage('Не заполнены обязательные поля!', 'Фамилия, Имя, Телефон')
+                return
+            }
             if (this.createMode) {
                 this.$store.commit('SET_PROGRESS', true)
-                DoctorService.saveNewDoctor(this.doctor).then(result => {
-                    this.$set(this, 'doctor', result.data);
+                DoctorService.saveNewDoctor(this.doctor).then(() => {
+                    this.showSMessage()
                 }).finally(() => {
                     this.close()
-                    this.$store.commit('SET_PROGRESS', false)
                 })
             } else {
                 this.$store.commit('SET_PROGRESS', true)
                 DoctorService.updateDoctor(this.doctor).then(() => {
-                   this.showSMessage()
+                    this.showSMessage()
                 }).finally(() => {
                     this.close()
-                    this.$store.commit('SET_PROGRESS', false)
                 })
             }
         },
         remove() {
-            //todo
+            this.$store.commit('SET_PROGRESS', true)
+            DoctorService.deleteDoctor(this.doctor.doctor_id).then(() => {
+                this.showSMessage('Информация о враче удалена из базы')
+            }).finally(() => {
+                this.close()
+            })
         },
         initEditFields() {
             this.$nextTick(() => {
@@ -120,6 +123,11 @@ export default {
                     this.$set(this.doctor, `${key}`, value)
                 }
             })
+        },
+        validate() {
+            return this.doctor.first_name
+                && this.doctor.last_name
+                && this.doctor.telephone
         }
     },
     watch: {

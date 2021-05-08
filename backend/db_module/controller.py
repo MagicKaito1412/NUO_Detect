@@ -111,6 +111,12 @@ def get_patient(patient_id):
     return jsonify(result)
 
 
+@app.route('/get_doctor/<int:doctor_id>', methods=['GET'])
+def get_doctor(doctor_id):
+    result = service.get_doctor(doctor_id)
+    return jsonify(result)
+
+
 @app.route('/get_user', methods=['POST'])
 def get_user():
     user_data = request.get_json()
@@ -140,6 +146,12 @@ def get_ekg(ekg_id):
 @app.route('/delete_patient/<int:patient_id>', methods=['DELETE'])
 def delete_patient(patient_id):
     service.delete_patient(patient_id)
+    return 'OK', 200
+
+
+@app.route('/delete_doctor/<int:doctor_id>', methods=['DELETE'])
+def delete_doctor(doctor_id):
+    service.delete_doctor(doctor_id)
     return 'OK', 200
 
 

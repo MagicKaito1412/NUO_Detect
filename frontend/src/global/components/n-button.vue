@@ -50,6 +50,8 @@ export default {
 <style lang="scss">
 .n-button {
     margin-top: 12px;
+    margin-right: 10px;
+
     span {
       font-size: 14px;
     }
@@ -60,7 +62,7 @@ export default {
         border: 1px solid $--color-primary;
 
         &:hover {
-            background-color: $--color-primary-light;
+            background-color: $--color-secondary;
         }
     }
 
@@ -90,7 +92,6 @@ export default {
         cursor: pointer;
         padding: 10px 20px;
         border-radius: 2px;
-        margin-right: 10px;
         width: fit-content;
 
         &:focus {

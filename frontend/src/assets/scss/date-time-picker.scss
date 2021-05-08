@@ -1,4 +1,6 @@
 @import "~element-ui/packages/theme-chalk/src/date-picker/date-picker";
+@import "~element-ui/packages/theme-chalk/src/date-picker/time-picker";
+@import "~element-ui/packages/theme-chalk/src/date-picker/time-spinner";
 @import "~element-ui/packages/theme-chalk/src/date-picker/date-table";
 @import "~element-ui/packages/theme-chalk/src/date-picker/picker-panel";
 
@@ -24,6 +26,22 @@
           border-radius: 5px !important;
         }
       }
+    }
+  }
+}
+
+.el-time-panel__content {
+  font-family: 'cmu_brightroman', monospace;
+}
+
+.el-time-panel__footer {
+  .confirm {
+    font-weight: normal;
+  }
+
+  .cancel, .confirm {
+    &:hover {
+      font-weight: 600;
     }
   }
 }

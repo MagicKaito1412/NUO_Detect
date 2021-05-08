@@ -1,4 +1,6 @@
-export const LOCALHOST = 'http://127.0.0.1:5000'
+export const DB_LOCALHOST = 'http://127.0.0.1:5000'
+export const TRAIN_LOCALHOST = 'http://127.0.0.1:5010'
+export const PREDICT_LOCALHOST = 'http://127.0.0.1:5015'
 export const CONFIG = {
     headers: {
         'Content-Type': 'application/json',
@@ -57,7 +59,7 @@ export const EKGS_TABLE_HEADERS = [
         title: "НОМЕР ЭКГ",
         key: "ekg_id",
     },{
-        title: "ДАТА СЪЕМА",
+        title: "ДАТА И ВРЕМЯ СЪЕМА",
         key: "registry_date",
     }
 ]

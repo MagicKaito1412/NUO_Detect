@@ -285,6 +285,20 @@ def get_patient(conn, cur, patient_id):
 
 
 @db_transaction
+def get_doctor(conn, cur, doctor_id):
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT * "
+        "FROM doctors "
+        f"WHERE doctors.doctor_id = {doctor_id} "
+        ") data"
+    )
+    data = cur.fetchone()[0]
+    return data
+
+
+@db_transaction
 def get_patients(conn, cur, filters):
     cols = (
         'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
@@ -396,6 +410,14 @@ def get_entity(conn, cur, user):
 @db_transaction
 def delete_patient(conn, cur, patient_id):
     cur.execute(f"SELECT user_id FROM patients WHERE patient_id = {patient_id}")
+    user_id = cur.fetchone()[0]
+    cur.execute(f"DELETE FROM users WHERE user_id = {user_id}")
+    conn.commit()
+
+
+@db_transaction
+def delete_doctor(conn, cur, doctor_id):
+    cur.execute(f"SELECT user_id FROM doctors WHERE doctor_id = {doctor_id}")
     user_id = cur.fetchone()[0]
     cur.execute(f"DELETE FROM users WHERE user_id = {user_id}")
     conn.commit()

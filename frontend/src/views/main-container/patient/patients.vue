@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import PatientService from '../../service/patient-service'
+import PatientService from './patient-service'
 import {PATIENTS_TABLE_HEADERS} from "../../service/constants";
 
 export default {
@@ -71,10 +71,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             PatientService.getPatientById(item.patient_id).then(result => {
                 this.$store.commit('SET_SELECTED_PATIENT', result.data)
-                this.goTo('patient', {
-                    creationMode: false,
-                    fromDoctor: true
-                })
+                this.goTo('patient', {creationMode: false})
             }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
             })
@@ -98,10 +95,7 @@ export default {
         },
         createNew() {
             this.$store.commit('SET_SELECTED_PATIENT', {})
-            this.goTo('patient', {
-                creationMode: true,
-                fromDoctor: true
-            })
+            this.goTo('patient', {creationMode: true})
         },
         resetSearchOptions() {
             this.$set(this, 'searchOptions', {})

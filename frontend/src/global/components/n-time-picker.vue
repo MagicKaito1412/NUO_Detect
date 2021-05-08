@@ -1,31 +1,28 @@
 <template>
     <div :class="`flr mb-2 align-c ${spaceBetween ? 'justify-sb' : 'mr-' + mrNum}`">
         <span class="mr-2" v-if="label">{{ label }}</span>
-        <el-date-picker
+        <el-time-picker
             :class="`input-width-${inputWidth}`"
             :placeholder="placeholder"
             :readonly="readonly"
             :clearable="false"
-            :picker-options="pickerOptions"
-            format="dd.MM.yyyy"
-            value-format="yyyy-MM-dd"
+            format="HH:mm"
+            value-format="HH:mm"
             v-model="innerValue"
         />
     </div>
 </template>
 
 <script>
- import moment from 'moment';
-
 export default {
-    name: "n-date-picker",
+name: "n-time-picker",
     props: {
         value: {
             default: null
         },
         placeholder: {
             type: String,
-            default: 'дд.мм.гггг'
+            default: 'чч:мм'
         },
         label: {
             type: String,
@@ -52,19 +49,6 @@ export default {
         return {
             innerValue: null,
         }
-    },
-    computed: {
-        pickerOptions() {
-                return {
-                    firstDayOfWeek: 1,
-                    cellClassName: (date) => {
-                        if ([6, 7].includes(moment(date).isoWeekday())) {
-                            return 'm-cell m-cell--weekend'
-                        }
-                        return 'm-cell'
-                    }
-                }
-            },
     },
     watch: {
         value(val) {

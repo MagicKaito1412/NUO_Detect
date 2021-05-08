@@ -1,6 +1,8 @@
 $--color-primary: #5585bf;
+$--color-primary-light: mix($--color-primary, white, 80%);
 $--color-primary-lighter: #adbaca;
-$--color-primary-light: #3c8aa9;
+$--color-secondary: #3c8aa9;
+$--color-secondary-light: mix($--color-secondary, white, 70%);
 $--color-primary-dark: #295d91;
 $--color-black-lighter: #303030;
 

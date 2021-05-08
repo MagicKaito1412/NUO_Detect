@@ -1,12 +1,12 @@
 export class User {
-    id;
+    user_id;
     login;
     password;
     access_level;
 }
 
 export class Patient {
-    id
+    patient_id
     user_id
     policy_num
     first_name
@@ -22,10 +22,11 @@ export class Patient {
     prob_rnd_forest
     prob_log_svm
     email
+    birth_date
 }
 
 export class Doctor {
-    id
+    doctor_id
     user_id
     first_name
     last_name
@@ -36,7 +37,7 @@ export class Doctor {
 }
 
 export class EKG {
-    id;
+    ekg_id;
     patient_id
     registry_date
     sdnn
@@ -79,4 +80,8 @@ export class EKG {
     pq
     qrs
     pulse
+    prob_log_reg
+    prob_rnd_forest
+    prob_log_svm
+    has_nuo
 }

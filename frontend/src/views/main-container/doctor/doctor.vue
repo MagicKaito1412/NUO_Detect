@@ -69,8 +69,7 @@
 <script>
 import {Doctor} from "../../service/models";
 import {TELEPHONE_PATTERN} from "../../service/constants";
-import DoctorService from "../../service/doctor-service";
-import LoginService from "../../service/login-service";
+import DoctorService from "./doctor-service";
 
 export default {
     name: "doctor",
@@ -106,18 +105,8 @@ export default {
         },
     },
     mounted() {
-        if (!this.authEntity || !this.authEntity.user_id) {
-            let authUser = this.$store.getters.getAuthUser
-            this.$store.commit('SET_PROGRESS', true)
-            LoginService.getEntityByUser(authUser).then(result => {
-                if (result) {
-                    this.$set(this, 'doctor', result.data)
-                    this.$store.commit('SET_AUTH_ENTITY', Object.assign({}, this.doctor))
-                }
-            }).finally(() => {
-                this.$store.commit('SET_PROGRESS', false)
-            })
-        }
+        let authEntity = this.$store.getters.getAuthEntity
+        this.$set(this, 'doctor', Object.assign({}, authEntity))
     }
 }
 </script>
