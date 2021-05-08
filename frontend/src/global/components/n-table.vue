@@ -100,6 +100,7 @@ export default {
         &__empty-block {
             display: flex;
             justify-content: center;
+            padding: 10px 0;
         }
     }
 }

@@ -4,9 +4,10 @@
             <h3>{{ title }}</h3>
             <div class="flr">
                 <template v-if="viewMode">
-                    <n-button label="К карточке пациента"
+                    <n-button :label="backButton"
                               @click="goTo('patient', {creationMode: false})"/>
                     <n-button
+                        v-if="fromDoctor"
                         @click="edit"
                         label="Редактировать"/>
                 </template>
@@ -204,27 +205,49 @@
                      :readonly="viewMode"
                      :value.sync="ekg.qrs"/>
             <n-sub-header label="Информация о наличии НУО"/>
-            <n-input label="Наличие НУО"
-                     @keyup.enter.native.prevent="save"
-                     :readonly="viewMode"
-                     :value.sync="ekg.has_nuo"/>
-            <n-input label="Вероятность НУО по модели логистической регрессии"
-                     @keyup.enter.native.prevent="save"
-                     :readonly="true"
-                     :value.sync="ekg.prob_log_reg"
-                     v-if="viewMode"/>
-            <n-input label="Вероятность НУО по модели случаного леса"
-                     @keyup.enter.native.prevent="save"
-                     :readonly="true"
-                     :value.sync="ekg.prob_rnd_forest"
-                     v-if="viewMode"/>
-            <n-input label="Вероятность НУО по модели SVM"
-                     @keyup.enter.native.prevent="save"
-                     :readonly="true"
-                     :value.sync="ekg.prob_log_svm"
-                     v-if="viewMode"/>
+            <div class="flr justify-sb">
+                <div class="flc">
+                    <p class="mb-3">
+                        Обнаружено нарушение углеводного обмена:
+                    </p>
+                    <template v-if="viewMode && fromDoctor">
+                        <p class="mb-3">
+                            Вероятность НУО по модели логистической регрессии:
+                        </p>
+                        <p class="mb-3">
+                            Вероятность НУО по модели случаного леса:
+                        </p>
+                        <p class="mb-3">
+                            Вероятность НУО по модели SVM:
+                        </p>
+                    </template>
+                </div>
+                <div class="flc mr-3">
+                    <p v-if="viewMode" class="mb-3">{{ nuoText }}</p>
+                    <div v-else class="mr-5 mt-3">
+                        <el-radio v-model="radioNuo"
+                                  class="mr-2"
+                                  label="-1">
+                            Не определено
+                        </el-radio>
+                        <el-radio v-model="radioNuo"
+                                  class="mr-2"
+                                  label="1">
+                            Есть
+                        </el-radio>
+                        <el-radio v-model="radioNuo"
+                                  label="0">
+                            Нет
+                        </el-radio>
+                    </div>
+                    <template v-if="viewMode && fromDoctor">
+                        <p class="mb-3">{{ prob_log_reg }}</p>
+                        <p class="mb-3">{{ prob_rnd_forest }}</p>
+                        <p class="mb-3">{{ prob_log_svm }}</p>
+                    </template>
+                </div>
+            </div>
         </div>
-
     </div>
 </template>
 
@@ -242,7 +265,8 @@ export default {
             creationMode: false,
             editMode: false,
             registry_date: null,
-            registry_time: null
+            registry_time: null,
+            radioNuo: '-1',
         }
     },
     methods: {
@@ -251,6 +275,7 @@ export default {
                 this.showWMessage('Не заполнены обязательные поля!', 'Дата съема ЭКГ, Время съема ЭКГ')
                 return
             }
+            this.$set(this.ekg, 'has_nuo', Number(this.radioNuo))
             this.$set(this.ekg, 'registry_date', new Date(`${this.registry_date} ${this.registry_time}`))
             if (this.creationMode) {
                 this.$store.commit('SET_PROGRESS', true)
@@ -302,12 +327,41 @@ export default {
         viewMode() {
             return !this.editMode && !this.creationMode
         },
+        nuoText() {
+            if (this.ekg.has_nuo === 1) {
+                return 'ДА'
+            }
+            if (this.ekg.has_nuo === 0) {
+                return 'НЕТ'
+            }
+            if (this.ekg.has_nuo === -1) {
+                return 'НЕИЗВЕСТНО'
+            }
+            return ''
+        },
+        prob_log_reg() {
+            return this.ekg.prob_log_reg === -1 ? 'Не определена' : this.ekg.prob_log_reg
+        },
+        prob_rnd_forest() {
+            return this.ekg.prob_rnd_forest === -1 ? 'Не определена' : this.ekg.prob_rnd_forest
+        },
+        prob_log_svm() {
+            return this.ekg.prob_log_svm === -1 ? 'Не определена' : this.ekg.prob_log_svm
+        },
+        fromDoctor() {
+            let getAuthUser = this.$store.getters.getAuthUser
+            return getAuthUser && getAuthUser.access_level === 2
+        },
+        backButton() {
+            return this.fromDoctor ? 'К карточке пациента' : 'К личным данным'
+        }
     },
     mounted() {
         let routeCreationMode = this.$route.params.creationMode
         this.$set(this, 'creationMode', routeCreationMode ? routeCreationMode : false)
         if (!this.creationMode) {
             this.$set(this, 'ekg', Object.assign({}, this.getEkg))
+            this.$set(this, 'radioNuo', `${this.ekg.has_nuo}`)
             this.$set(this, 'registry_date', this.ekg.registry_date)
             this.$set(this, 'registry_time', this.ekg.registry_date)
         }

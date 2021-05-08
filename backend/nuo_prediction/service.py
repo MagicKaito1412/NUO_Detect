@@ -25,7 +25,7 @@ def get_predict_patient_ekg(conn, cur, patient_id):
         tuple(map(lambda x: 'ekgs.' + x, EKG_COLUMNS))
     cur.execute(f"SELECT {','.join(exec_cols)} "
                 "FROM ekgs LEFT JOIN patients ON ekgs.patient_id = patients.patient_id "
-                f"WHERE ekgs.has_nuo = -1 AND patients.patient_id = {patient_id}")
+                f"WHERE patients.patient_id = {patient_id}")
 
     data = cur.fetchall()
     df = pd.DataFrame(data=data, columns=df_cols)

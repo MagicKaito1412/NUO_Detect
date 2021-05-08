@@ -16,10 +16,6 @@
                 <n-input label="Отчество"
                          @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.middle_name"/>
-                <n-input label="Номер телефона"
-                         mask="###########"
-                         @keyup.enter.native.prevent="reloadData"
-                         :value.sync="searchOptions.telephone"/>
             </div>
             <template slot="buttons">
                 <n-button

@@ -84,6 +84,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             DoctorService.updateDoctor(this.doctor).then(() => {
                 this.showSMessage()
+                this.$set(this, 'editMode', false)
             }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
             })

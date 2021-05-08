@@ -15,6 +15,7 @@
                                  :password="true"
                                  :value.sync="user.password"/>
                         <n-button
+                            class="mr-0"
                             :full-width="true"
                             :disabled="!user.login || !user.password"
                             @click="loginClick"
@@ -44,10 +45,10 @@ export default {
                 LoginService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
                     if (result && result.data) {
                         this.$store.commit('SET_AUTH_USER', result.data)
-                        this.goTo('home')
                         LoginService.getEntityByUser(result.data).then(entity => {
                             if (entity) {
                                 this.$store.commit('SET_AUTH_ENTITY', entity.data)
+                                this.goTo('home')
                             }
                         })
                     } else {

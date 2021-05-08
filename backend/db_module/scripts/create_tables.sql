@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS public.users
 ALTER TABLE public.users
     OWNER to u1;
 
-INSERT INTO public.users (user_id, password, login, access_level)
+INSERT INTO public.users (user_id, login, password, access_level)
 VALUES (nextval(pg_get_serial_sequence('users', 'user_id')), 'admin', 'admin0000', 1);
 
 -- Table: public.patients
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.patients
     last_name       character varying(50) COLLATE pg_catalog."default" NOT NULL,
     middle_name     character varying(50) COLLATE pg_catalog."default",
     gender          integer                                            NOT NULL,
-    birth_date      timestamp without time zone                        NOT NULL,
+    birth_date      timestamp without time zone,
     age             integer,
     weight          integer                                            NOT NULL,
     height          integer                                            NOT NULL,

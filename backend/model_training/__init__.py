@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
+from flask_cors import CORS
 
 scaler = StandardScaler()
 model_logreg = LogisticRegression(solver='liblinear', C=0.003)
@@ -14,6 +15,7 @@ model_svm = SVC(C=0.01, probability=True, kernel='linear', random_state=42)
 
 
 app = Flask(__name__,)
+CORS(app)
 app.url_map.strict_slashes = False
 app.config['MODELS_PATH'] = sys.path[-1] + '/backend' + '/models'
 

@@ -1,8 +1,11 @@
 from flask import Flask
 import sys
 import pickle as pkl
+from flask_cors import CORS
 
 app = Flask(__name__,)
+CORS(app)
+
 app.url_map.strict_slashes = False
 app.config['MODELS_PATH'] = sys.path[-1] + '/backend' + '/models'
 

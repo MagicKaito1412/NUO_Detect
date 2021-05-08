@@ -233,7 +233,7 @@ def get_all_doctors(conn, cur):
 @db_transaction
 def get_doctors(conn, cur, filters):
     cols = (
-        'doctor_id', 'first_name', 'last_name', 'middle_name', 'telephone',
+        'doctor_id', 'first_name', 'last_name', 'middle_name',
     )
     if not filters:
         filters = dict(first_name="")
@@ -255,7 +255,7 @@ def get_doctors(conn, cur, filters):
 @db_transaction
 def get_all_patients(conn, cur):
     cols = (
-        'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',
+        'patient_id', 'first_name', 'last_name', 'middle_name', 'age', 'policy_num',
     )
     cur.execute(
         "SELECT row_to_json(data) FROM "

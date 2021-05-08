@@ -24,9 +24,6 @@ export const PATIENTS_TABLE_HEADERS = [
         title: "ОТЧЕСТВО",
         key: "middle_name",
     },{
-        title: "ПОЛ",
-        key: "gender",
-    },{
         title: "ВОЗРАСТ",
         key: "age",
     },{

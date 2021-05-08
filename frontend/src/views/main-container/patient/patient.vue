@@ -150,24 +150,29 @@
                             label="Расчитать вероятность НУО"/>
                     </div>
                     <div class="flr justify-sb">
-                        <span class="mr-2">
-                            Есть нарушение углеводного обмена: {{ viewMode ? nuoText : '' }}
-                        </span>
-                        <div v-if="!viewMode" class="mr-5 mt-3">
-                            <el-radio v-model="radioNuo"
-                                      class="mr-2"
-                                      label="-1">
-                                Не определено
-                            </el-radio>
-                            <el-radio v-model="radioNuo"
-                                      class="mr-2"
-                                      label="1">
-                                Есть
-                            </el-radio>
-                            <el-radio v-model="radioNuo"
-                                      label="0">
-                                Нет
-                            </el-radio>
+                        <div class="flc">
+                            <p class="mb-3">
+                                Есть нарушение углеводного обмена:
+                            </p>
+                        </div>
+                        <div class="flc mr-3">
+                            <p v-if="viewMode" class="mb-3">{{ nuoText }}</p>
+                            <div v-else class="mr-5 mt-3">
+                                <el-radio v-model="radioNuo"
+                                          class="mr-2"
+                                          label="-1">
+                                    Не определено
+                                </el-radio>
+                                <el-radio v-model="radioNuo"
+                                          class="mr-2"
+                                          label="1">
+                                    Есть
+                                </el-radio>
+                                <el-radio v-model="radioNuo"
+                                          label="0">
+                                    Нет
+                                </el-radio>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,6 +213,7 @@ export default {
             creationMode: false,
             radioNuo: '-1',
             radioGender: null, // 1-М, 2-Ж
+            showProbs: false //todo
         }
     },
     methods: {
@@ -230,7 +236,7 @@ export default {
             })
         },
         addEkg() {
-            this.goTo('ekg')
+            this.goTo('ekg', {creationMode: true})
         },
         edit() {
             this.$set(this, 'editMode', true);
@@ -274,8 +280,15 @@ export default {
             }
         },
         predict() {
-            //todo wait for return value
-            PatientService.predict(this.patient.patient_id)
+            this.$store.commit('SET_PROGRESS', true)
+            PatientService.predict(this.patient.patient_id).then(result => {
+                if (result) {
+                    this.$set(this, 'showProbs', true)
+                    this.showSMessage('Вероятности успешно расчитаны')
+                }
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
+            })
         },
         validate() {
             return this.patient.first_name
@@ -354,8 +367,7 @@ export default {
                 this.loadPatient()
             }
         } else { //from patient account
-            let authEntity = this.$store.getters.getAuthEntity
-            this.$set(this, 'patient', Object.assign({}, authEntity))
+            this.loadPatient()
         }
     }
 }
