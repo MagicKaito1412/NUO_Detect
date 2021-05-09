@@ -23,6 +23,7 @@ export class Patient {
     prob_log_svm
     email
     birth_date
+    has_probs
 }
 
 export class Doctor {

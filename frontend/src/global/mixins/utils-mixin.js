@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export default {
     methods: {
         goTo(name, params = {}) {
@@ -31,5 +33,12 @@ export default {
         showWMessage(title, message, duration) {
             this.showMessage(title, message, "warning", duration);
         },
+
+        formatDate(date) {
+            return moment(date).format('DD.MM.YYYY')
+        },
+        formatDateTime(date) {
+            return moment(date).format('YYYY-MM-DD HH:mm')
+        }
     }
 }

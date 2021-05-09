@@ -7,7 +7,9 @@
                         <div class="pn-form-heading">
                             <div class="pn-form-heading__inner flr justify-c align-c">
                                 <h3>{{ title }}</h3>
-                                <i class="material-icons close-icon" @click="close">close</i>
+                                <i class="material-icons close-icon"
+                                   @click="close"
+                                   v-if="showCloseIcon">close</i>
                             </div>
                             <divider/>
                         </div>
@@ -39,6 +41,10 @@ export default {
         visible: {
             type: Boolean,
             default: false
+        },
+        showCloseIcon: {
+            type: Boolean,
+            default: true
         }
     },
     methods: {

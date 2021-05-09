@@ -41,6 +41,12 @@ def predict(patient_id):
     pred_forest_proba = model_forest.predict_proba(X_scaled)[:, 1]
     pred_svm_proba = model_svm.predict_proba(X_scaled)[:, 1]
 
+    patient_data = {
+        'patient_id': patient_id,
+        'has_probs': True,
+    }
+    requests.post(url='http://127.0.0.1:5000/update_patient', json=patient_data)
+
     for i, val in data.iterrows():
         json_data = {
             DB_PROB_LOG_REG: pred_logreg_proba[i],

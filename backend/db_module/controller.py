@@ -79,6 +79,15 @@ def update_doctor():
     return 'check doctor_id', 400
 
 
+@app.route('/update_user', methods=['POST'])
+def update_user():
+    data = request.get_json()
+    if data.get('user_id'):
+        service.update_user(data)
+        return 'OK', 200
+    return 'check user_id', 400
+
+
 @app.route('/get_all_doctors', methods=['GET'])
 def get_all_doctors():
     result = service.get_all_doctors()

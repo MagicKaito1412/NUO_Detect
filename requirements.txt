@@ -8,3 +8,5 @@ alembic
 pandas
 requests
 scikit-learn
+lxml
+docx-mailmerge

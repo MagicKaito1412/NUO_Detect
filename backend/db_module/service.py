@@ -27,9 +27,9 @@ def export_csv(conn, cur, file):
         data['Дата/Время съема ЭКГ/глюкозы'])
     if AGE not in data.columns:
         data[AGE] = data.apply(reldate, axis=1)
-    data[PROB_LOG_REG] = -1
-    data[PROB_RND_FOREST] = -1
-    data[PROB_SVM] = -1
+    # data[PROB_LOG_REG] = -1
+    # data[PROB_RND_FOREST] = -1
+    # data[PROB_SVM] = -1
     data[TARGET_COL] = data[TARGET_COL].astype(int)
 
     added_patients = set()
@@ -67,9 +67,9 @@ def export_csv(conn, cur, file):
                 'weight': row[WEIGHT],
                 'height': row[HEIGHT],
                 'has_nuo': -1,
-                'prob_log_reg': -1,
-                'prob_rnd_forest': -1,
-                'prob_log_svm': -1
+                # 'prob_log_reg': -1,
+                # 'prob_rnd_forest': -1,
+                # 'prob_log_svm': -1
             }
             cur.execute(f"INSERT INTO patients({', '.join(patient_data.keys())}) "
                         f"VALUES ({','.join(['%s'] * len(patient_data))})",
@@ -213,6 +213,17 @@ def update_doctor(conn, cur, doctor_data):
 
 
 @db_transaction
+def update_user(conn, cur, user_data):
+    user_id = user_data.pop('user_id')
+    subquery = ', '.join([f'{k}=%s' for k in user_data.keys()])
+    cur.execute(
+        f"UPDATE users SET {subquery} WHERE user_id=%s",
+        (tuple(user_data.values()) + (user_id,))
+    )
+    conn.commit()
+
+
+@db_transaction
 def get_all_doctors(conn, cur):
     cols = (
         'doctor_id', 'first_name', 'last_name', 'middle_name', 'telephone',
@@ -233,7 +244,7 @@ def get_all_doctors(conn, cur):
 @db_transaction
 def get_doctors(conn, cur, filters):
     cols = (
-        'doctor_id', 'first_name', 'last_name', 'middle_name',
+        'doctor_id', 'first_name', 'last_name', 'middle_name', 'telephone',
     )
     if not filters:
         filters = dict(first_name="")
@@ -323,12 +334,13 @@ def get_patients(conn, cur, filters):
 @db_transaction
 def get_patient_ekgs(conn, cur, patient_id):
     exec_cols = (
-        'ekg_id', 'registry_date'
+        'ekg_id', 'registry_date', 'prob_log_reg', 'prob_rnd_forest', 'prob_log_svm'
     )
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
-        f"SELECT ekg_id, TO_CHAR(registry_date, 'DD.MM.YYYY HH:MI') as registry_date "
+        f"SELECT ekg_id, TO_CHAR(registry_date, 'DD.MM.YYYY HH:MI') as registry_date, "
+        f"prob_log_reg, prob_rnd_forest, prob_rnd_forest, prob_log_svm "
         f"FROM ekgs WHERE ekgs.patient_id = {patient_id} "
         ") data"
     )

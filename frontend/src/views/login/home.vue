@@ -44,11 +44,17 @@ export default {
                 this.$store.commit('SET_PROGRESS', true)
                 LoginService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
                     if (result && result.data) {
-                        this.$store.commit('SET_AUTH_USER', result.data)
-                        LoginService.getEntityByUser(result.data).then(entity => {
+                        let authUser = result.data
+                        this.$store.commit('SET_AUTH_USER', authUser)
+                        LoginService.getEntityByUser(authUser).then(entity => {
                             if (entity) {
                                 this.$store.commit('SET_AUTH_ENTITY', entity.data)
-                                this.goTo('home')
+                                let changePass = false
+                                if (this.user.login === this.user.password) {
+                                    this.showEMessage('Смените пароль по умолчанию!')
+                                    changePass = true
+                                }
+                                this.goTo('home', {changePass: changePass})
                             }
                         })
                     } else {

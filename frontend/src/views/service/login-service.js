@@ -12,4 +12,8 @@ export default {
     getEntityByUser(user) {
         return axios.post(`${DB_LOCALHOST}/get_entity`, user)
     },
+
+    changePassword(user) {
+        return axios.post(`${DB_LOCALHOST}/update_user`, user)
+    }
 }

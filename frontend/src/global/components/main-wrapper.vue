@@ -85,7 +85,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             ModelTrainService.train().then(() => {
                 this.showSMessage('Обучение моделей успешно завершено')
-                //todo this.goTo('training-results')
+                //todo mb this.goTo('statistics')
             }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
                 this.close()

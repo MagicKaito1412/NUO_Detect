@@ -1,6 +1,8 @@
 export const DB_LOCALHOST = 'http://127.0.0.1:5000'
 export const TRAIN_LOCALHOST = 'http://127.0.0.1:5010'
 export const PREDICT_LOCALHOST = 'http://127.0.0.1:5015'
+export const REPORT_LOCALHOST = 'http://127.0.0.1:5020'
+
 export const CONFIG = {
     headers: {
         'Content-Type': 'application/json',
@@ -59,4 +61,17 @@ export const EKGS_TABLE_HEADERS = [
         title: "ДАТА И ВРЕМЯ СЪЕМА",
         key: "registry_date",
     }
+]
+
+export const PROBS_EKGS_TABLE_HEADERS = [
+    {
+        title: "LOG REG",
+        key: "prob_log_reg",
+    },{
+        title: "RANDOM FOREST",
+        key: "prob_rnd_forest",
+    },{
+        title: "SVM",
+        key: "prob_log_svm",
+    },
 ]

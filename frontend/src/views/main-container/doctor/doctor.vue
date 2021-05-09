@@ -44,12 +44,18 @@
             />
         </div>
         <div class="flc width-2">
-            <n-button
-                v-if="!editMode"
-                @click="edit"
-                :full-width="true"
-                label="Редактировать личные данные"
-            />
+            <template v-if="!editMode">
+                <n-button
+                    @click="edit"
+                    :full-width="true"
+                    label="Редактировать личные данные"
+                />
+                <n-button
+                    @click="changePass"
+                    :full-width="true"
+                    label="Сменить пароль"
+                />
+            </template>
             <template v-else>
                 <n-button
                     @click="save"
@@ -63,6 +69,7 @@
                 />
             </template>
         </div>
+        <change-pass-dialog :visible.sync="showDialog"/>
     </div>
 </template>
 
@@ -70,13 +77,16 @@
 import {Doctor} from "../../service/models";
 import {TELEPHONE_PATTERN} from "../../service/constants";
 import DoctorService from "./doctor-service";
+import ChangePassDialog from "../change-pass-dialog";
 
 export default {
     name: "doctor",
+    components: {ChangePassDialog},
     data() {
         return {
             doctor: new Doctor(),
-            editMode: false
+            editMode: false,
+            showDialog: false
         }
     },
     methods: {
@@ -95,6 +105,9 @@ export default {
         cancel() {
             this.$set(this, 'editMode', false)
             this.$set(this, 'doctor', Object.assign({}, this.authEntity))
+        },
+        changePass() {
+            this.$set(this, 'showDialog', true)
         }
     },
     computed: {

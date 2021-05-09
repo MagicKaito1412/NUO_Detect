@@ -2,8 +2,20 @@
     <div class="flc">
         <div class="flr justify-sb">
             <h3>{{ title }}</h3>
-            <div class="flr" v-if="fromDoctor && !creationMode">
+            <div class="flr" v-if="!creationMode">
                 <n-button
+                    :disabled="!viewMode"
+                    @click="createReport"
+                    label="Сформировать отчет"
+                />
+                <n-button
+                    v-if="!fromDoctor"
+                    @click="changePass"
+                    :full-width="true"
+                    label="Сменить пароль"
+                />
+                <n-button
+                    v-if="fromDoctor"
                     :disabled="!viewMode"
                     class="mr-0"
                     @click="goTo('patients')"
@@ -73,14 +85,10 @@
                                  @keyup.enter.native.prevent="save"
                                  :readonly="viewMode"
                                  :value.sync="patient.middle_name"/>
-                        <n-input label="Пол"
-                                 @keyup.enter.native.prevent="save"
-                                 :readonly="viewMode"
-                                 :value="genderText"
-                                 v-if="viewMode"/>
-                        <div class="flr justify-sb mb-3" v-else>
+                        <div class="flr justify-sb mb-3">
                             <span>Пол</span>
-                            <div class="mr-5">
+                            <span v-if="viewMode">{{ genderText }}</span>
+                            <div class="mr-5" v-else>
                                 <el-radio v-model="radioGender"
                                           class="mr-2"
                                           label="1">
@@ -147,7 +155,7 @@
                             v-if="fromDoctor && !creationMode"
                             :disabled="!viewMode"
                             @click="predict"
-                            label="Расчитать вероятность НУО"/>
+                            :label="predictButton"/>
                     </div>
                     <div class="flr justify-sb">
                         <div class="flc">
@@ -175,6 +183,11 @@
                             </div>
                         </div>
                     </div>
+                    <n-table v-if="showProbs && fromDoctor"
+                             :tableData="fullTableData"
+                             :columns="fullTableColumns"
+                             :showFilters="false"
+                             @rowClick="rowClick"/>
                 </div>
             </div>
             <div class="flc width-4" v-if="!creationMode">
@@ -194,26 +207,31 @@
                          @rowClick="rowClick"/>
             </div>
         </div>
+        <change-pass-dialog :visible.sync="showDialog"/>
     </div>
 </template>
 
 <script>
 import PatientService from './patient-service'
+import ReportService from '../../service/report-service'
 import EkgService from '../ekg/ekg-service'
-import {EKGS_TABLE_HEADERS, POLICY_PATTERN, TELEPHONE_PATTERN} from "../../service/constants"
+import {EKGS_TABLE_HEADERS, POLICY_PATTERN, PROBS_EKGS_TABLE_HEADERS, TELEPHONE_PATTERN} from "../../service/constants"
 import {Patient} from "../../service/models";
+import ChangePassDialog from "../change-pass-dialog";
 
 export default {
     name: "patient",
+    components: {ChangePassDialog},
     data() {
         return {
             tableData: [],
+            fullTableData: [],
             patient: new Patient(),
             editMode: false,
             creationMode: false,
             radioNuo: '-1',
             radioGender: null, // 1-М, 2-Ж
-            showProbs: false //todo
+            showDialog: false
         }
     },
     methods: {
@@ -283,7 +301,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             PatientService.predict(this.patient.patient_id).then(result => {
                 if (result) {
-                    this.$set(this, 'showProbs', true)
+                    this.$set(this.patient, 'has_probs', true)
                     this.showSMessage('Вероятности успешно расчитаны')
                 }
             }).finally(() => {
@@ -305,6 +323,59 @@ export default {
             this.$set(this, 'patient', Object.assign({}, this.getPatient))
             this.$set(this, 'radioNuo', `${this.patient.has_nuo}`)
             this.$set(this, 'radioGender', `${this.patient.gender}`)
+        },
+        createReport() {
+            let patient = {}
+            for (const [key, value] of Object.entries(this.patient)) {
+                if (!value) continue
+                if (key === 'birth_date') {
+                    patient[key] = this.formatDate(value)
+                } else if (key === 'has_nuo') {
+                    patient[key] = this.nuoText
+                } else if (key === 'gender') {
+                    patient[key] = this.genderText
+                } else {
+                    patient[key] = `${value}`
+                }
+            }
+            let ekgs = this.fullTableData && this.fullTableData.length
+                ? Array.from(this.fullTableData)
+                : Array.from(this.tableData)
+            let data = {
+                patient: patient,
+                ekgs: ekgs
+            }
+
+            if (this.fromDoctor) { //mb add pictures
+                this.$store.commit('SET_PROGRESS', true)
+                ReportService.createDocReport(data).then(result => {
+                    if (result) {
+                        let filename = result.data
+                        ReportService.download(filename).then(() => {
+                            this.showIMessage('Отчет по пациенту сформирован')
+                            ReportService.removeFromFolder(filename)
+                        })
+                    }
+                }).finally(() => {
+                    this.$store.commit('SET_PROGRESS', false)
+                })
+                return
+            }
+            this.$store.commit('SET_PROGRESS', true)
+            ReportService.createPatientReport(data).then(result => {
+                if (result) {
+                    let filename = result.data
+                    ReportService.download(filename).then(() => {
+                        this.showIMessage('Отчет сформирован')
+                        ReportService.removeFromFolder(filename)
+                    })
+                }
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
+            })
+        },
+        changePass() {
+            this.$set(this, 'showDialog', true)
         }
     },
     computed: {
@@ -324,7 +395,7 @@ export default {
             if (this.patient.gender === 1) {
                 return 'Мужской'
             }
-            if (this.patient.has_nuo === 2) {
+            if (this.patient.gender === 2) {
                 return 'Женский'
             }
             return ''
@@ -346,6 +417,11 @@ export default {
         columns() {
             return Array.from(EKGS_TABLE_HEADERS)
         },
+        fullTableColumns() {
+            let arr = Array.from(EKGS_TABLE_HEADERS)
+            arr.push(...Array.from(PROBS_EKGS_TABLE_HEADERS))
+            return arr
+        },
         viewMode() {
             return !this.editMode && !this.creationMode
         },
@@ -358,6 +434,26 @@ export default {
         telephoneMask() {
             return TELEPHONE_PATTERN
         },
+        showProbs() {
+            return this.patient.has_probs
+        },
+        predictButton() {
+            return this.showProbs ? 'Обновить расчеты вероятностей' : 'Расчитать вероятность НУО'
+        }
+    },
+    watch: {
+        showProbs(val) {
+            if (val) {
+                this.$store.commit('SET_PROGRESS', true)
+                EkgService.loadEkgs(this.patient.patient_id).then(result => {
+                    if (result) {
+                        this.$set(this, 'fullTableData', result.data)
+                    }
+                }).finally(() => {
+                    this.$store.commit('SET_PROGRESS', false)
+                })
+            }
+        }
     },
     mounted() {
         if (this.fromDoctor) { //from doctor account
