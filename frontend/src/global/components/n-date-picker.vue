@@ -1,5 +1,5 @@
 <template>
-    <div :class="`flr mb-2 align-c ${spaceBetween ? 'justify-sb' : 'mr-' + mrNum}`">
+    <div :class="`fl-row mb-2 align-c ${spaceBetween ? 'justify-sb' : 'mr-' + mrNum}`">
         <span class="mr-2" v-if="label">{{ label }}</span>
         <el-date-picker
             :class="`input-width-${inputWidth}`"

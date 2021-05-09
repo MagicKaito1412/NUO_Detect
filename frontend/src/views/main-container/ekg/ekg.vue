@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="flr justify-sb">
+        <div class="fl-row justify-sb">
             <h3>{{ title }}</h3>
-            <div class="flr">
+            <div class="fl-row">
                 <template v-if="viewMode">
                     <n-button :label="backButton"
                               @click="goTo('patient', {creationMode: false})"/>
@@ -23,7 +23,7 @@
                 </template>
             </div>
         </div>
-        <div class="flc">
+        <div class="fl-сol">
             <n-sub-header label="Общая информация"/>
             <template v-if="viewMode">
                 <n-date-picker label="Дата съема ЭКГ"
@@ -205,8 +205,8 @@
                      :readonly="viewMode"
                      :value.sync="ekg.qrs"/>
             <n-sub-header label="Информация о наличии НУО"/>
-            <div class="flr justify-sb">
-                <div class="flc">
+            <div class="fl-row justify-sb">
+                <div class="fl-сol">
                     <p class="mb-3">
                         Обнаружено нарушение углеводного обмена:
                     </p>
@@ -222,7 +222,7 @@
                         </p>
                     </template>
                 </div>
-                <div class="flc mr-3">
+                <div class="fl-сol mr-3">
                     <p v-if="viewMode" class="mb-3">{{ nuoText }}</p>
                     <div v-else class="mr-5 mt-3">
                         <el-radio v-model="radioNuo"

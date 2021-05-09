@@ -7,25 +7,34 @@
                 <h2>Предиктивная система определения наличия НУО</h2>
             </div>
             <cardio-logo-generator :number="login ? 3 : 5"/>
-            <div v-if="!login" class="flr">
+            <div v-if="!login" class="fl-row">
                 <template v-if="access_level === 2">
-                    <el-button class="mr-3 cp" @click="train">
-                        <span class="iconify brain-icon"/>
+                    <el-button :class="`mr-3 cp ${showTrainDialog ? 'active-button': ''}`"
+                               @click="train">
+                        <span :class="`iconify brain-icon${showTrainDialog ? '-active': ''}`"/>
                     </el-button>
-                    <el-button class="cp" @click="train">
-                        <span class="iconify statistics-icon"/>
+
+                    <el-button :class="`cp ${route === 'statistics' ? 'active-button': ''}`"
+                               @click="goTo('statistics')">
+                        <span :class="`iconify statistics-icon${route === 'statistics' ? '-active': ''}`"/>
                     </el-button>
+
                     <divider type="vertical" style="height: 40px"/>
-                    <el-button class="mr-3 cp" v-if="$route.name !== 'patients'" @click="goTo('patients')">
-                        <span class="iconify patients-icon"/>
+
+                    <el-button :class="`mr-3 cp ${route === 'patients' ? 'active-button': ''}`"
+                               @click="goTo('patients')">
+                        <span :class="`iconify patients-icon${route === 'patients' ? '-active': ''}`"/>
                     </el-button>
-                    <el-button class="mr-3 cp" @click="doctorCard">
-                        <span class="iconify badge-icon"/>
+
+                    <el-button :class="`mr-3 cp ${route === 'doctor' ? 'active-button': ''}`"
+                               @click="goTo('doctor')">
+                        <span :class="`iconify badge-icon${route === 'doctor' ? '-active': ''}`"/>
                     </el-button>
                 </template>
-                <el-button class="mr-3 cp" v-if="access_level === 3 && $route.name !== 'patient'"
+                <el-button :class="`mr-3 cp ${route === 'patient' ? 'active-button': ''}`"
+                           v-if="access_level === 3"
                            @click="goTo('patient')">
-                    <span class="iconify patient-icon"/>
+                    <span :class="`iconify patient-icon${route === 'patient' ? '-active': ''}`"/>
                 </el-button>
                 <el-button class="mr-5 cp" @click="logout">
                     <span class="iconify exit-icon"/>
@@ -41,7 +50,7 @@
         <n-dialog title="Режим обучения" :visible.sync="showTrainDialog" :hide-back-button="true">
             <span style="white-space: pre-wrap">{{ content }}</span>
             <div class="justify-end" slot="footer">
-                <div class="primary-button flr justify-c mt-3">
+                <div class="primary-button fl-row justify-c mt-3">
                     <n-button
                         @click="train"
                         label="Продолжить"
@@ -94,9 +103,6 @@ export default {
         close() {
             this.$set(this, 'showTrainDialog', false)
         },
-        doctorCard() {
-            this.goTo('doctor')
-        },
         logout() {
             //todo add back
             this.goTo('login')
@@ -107,6 +113,9 @@ export default {
         content() {
             return "Внимание! Вы переходите в режим обучения моделей. В этом режиме будут недоступны основные " +
                 "функции системы.\n\nХотите продолжить?"
+        },
+        route() {
+            return this.$route.name
         }
     }
 }
@@ -153,6 +162,9 @@ body {
     .brain-icon {
         content: url('https://api.iconify.design/mdi:brain.svg?color=%235585bf&height=24');
 
+        &-active {
+            content: url('https://api.iconify.design/mdi:brain.svg?color=%23295d91&height=24');
+        }
         &:hover {
             content: url('https://api.iconify.design/mdi:brain.svg?color=%23295d91&height=24');
         }
@@ -162,6 +174,9 @@ body {
         content: url('https://api.iconify.design/mdi:card-account-details.svg?color=%235585bf&height=24');
         //content: url('https://api.iconify.design/mdi:badge-account-horizontal.svg?color=%235585bf&height=24');
 
+        &-active {
+            content: url('https://api.iconify.design/mdi:card-account-details.svg?color=%23295d91&height=24');
+        }
         &:hover {
             content: url('https://api.iconify.design/mdi:card-account-details.svg?color=%23295d91&height=24');
             //content: url('https://api.iconify.design/mdi:badge-account-horizontal.svg?color=%23295d91&height=24');
@@ -171,6 +186,9 @@ body {
     .statistics-icon {
         content: url('https://api.iconify.design/mdi:chart-areaspline.svg?color=%235585bf&height=24');
 
+        &-active {
+            content: url('https://api.iconify.design/mdi:chart-areaspline.svg?color=%23295d91&height=24');
+        }
         &:hover {
             content: url('https://api.iconify.design/mdi:chart-areaspline.svg?color=%23295d91&height=24');
         }
@@ -179,6 +197,9 @@ body {
     .patients-icon {
         content: url('https://api.iconify.design/mdi:account-search.svg?color=%235585bf&height=24');
 
+        &-active {
+            content: url('https://api.iconify.design/mdi:account-search.svg?color=%23295d91&height=24');
+        }
         &:hover {
             content: url('https://api.iconify.design/mdi:account-search.svg?color=%23295d91&height=24');
         }
@@ -187,6 +208,9 @@ body {
     .patient-icon {
         content: url('https://api.iconify.design/mdi:account-details.svg?color=%235585bf&height=24');
 
+        &-active {
+            content: url('https://api.iconify.design/mdi:account-details.svg?color=%23295d91&height=24');
+        }
         &:hover {
             content: url('https://api.iconify.design/mdi:account-details.svg?color=%23295d91&height=24');
         }
@@ -198,6 +222,11 @@ body {
         &:hover {
             content: url('https://api.iconify.design/mdi:exit-to-app.svg?color=%23295d91&height=24');
         }
+    }
+
+    .active-button {
+        background-color: $--color-primary-light-2;
+        cursor: auto;
     }
 }
 

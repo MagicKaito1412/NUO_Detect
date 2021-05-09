@@ -10,6 +10,10 @@ export default {
         return axios.get(`${DB_LOCALHOST}/get_all_patients`)
     },
 
+    loadPatientStatistics() {
+        return axios.get(`${DB_LOCALHOST}/get_stat`)
+    },
+
     loadFilteredPatients(filters) {
         return axios.post(`${DB_LOCALHOST}/get_patients`, filters, CONFIG)
     },

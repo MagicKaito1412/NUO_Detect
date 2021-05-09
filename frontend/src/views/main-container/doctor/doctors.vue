@@ -6,7 +6,7 @@
                  @handleSelectionChange="handleSelectionChange"
                  @rowClick="rowClick"
                  @reloadData="reloadData">
-            <div class="flr mb-2 justify-sb">
+            <div class="fl-row mb-2 justify-sb">
                 <n-input label="Фамилия"
                          @keyup.enter.native.prevent="reloadData"
                          :value.sync="searchOptions.last_name"/>

@@ -1,8 +1,8 @@
 <template>
-    <div class="flc">
-        <div class="flr justify-sb">
+    <div class="fl-сol">
+        <div class="fl-row justify-sb">
             <h3>{{ title }}</h3>
-            <div class="flr" v-if="!creationMode">
+            <div class="fl-row" v-if="!creationMode">
                 <n-button
                     :disabled="!viewMode"
                     @click="createReport"
@@ -49,8 +49,8 @@
         </div>
         <divider/>
         <div class="patient">
-            <div class="flc width-7">
-                <div class="flr justify-sb">
+            <div class="fl-сol width-7">
+                <div class="fl-row justify-sb">
                     <h4>Личная информация</h4>
                     <template v-if="fromDoctor">
                         <n-button class="mr-0"
@@ -58,7 +58,7 @@
                                   v-if="viewMode"
                                   label="Редактировать"
                         />
-                        <div class="flr" v-else>
+                        <div class="fl-row" v-else>
                             <n-button
                                 @click="save"
                                 label="Сохранить"
@@ -71,8 +71,8 @@
                         </div>
                     </template>
                 </div>
-                <div class="flr justify-sb">
-                    <div class="flc">
+                <div class="fl-row justify-sb">
+                    <div class="fl-сol">
                         <n-input label="Фамилия"
                                  @keyup.enter.native.prevent="save"
                                  :readonly="viewMode"
@@ -85,7 +85,7 @@
                                  @keyup.enter.native.prevent="save"
                                  :readonly="viewMode"
                                  :value.sync="patient.middle_name"/>
-                        <div class="flr justify-sb mb-3">
+                        <div class="fl-row justify-sb mb-3">
                             <span>Пол</span>
                             <span v-if="viewMode">{{ genderText }}</span>
                             <div class="mr-5" v-else>
@@ -113,7 +113,7 @@
                                  mask="###"
                                  :value.sync="patient.age"/>
                     </div>
-                    <div class="flc">
+                    <div class="fl-сol">
                         <n-input label="Вес (кг)"
                                  mask="###"
                                  @keyup.enter.native.prevent="save"
@@ -148,7 +148,7 @@
                 </div>
                 <div class="mt-10">
                     <divider/>
-                    <div class="flr justify-sb">
+                    <div class="fl-row justify-sb">
                         <h4>Информация о наличии НУО</h4>
                         <n-button
                             class="mr-0"
@@ -157,13 +157,13 @@
                             @click="predict"
                             :label="predictButton"/>
                     </div>
-                    <div class="flr justify-sb">
-                        <div class="flc">
+                    <div class="fl-row justify-sb">
+                        <div class="fl-сol">
                             <p class="mb-3">
                                 Есть нарушение углеводного обмена:
                             </p>
                         </div>
-                        <div class="flc mr-3">
+                        <div class="fl-сol mr-3">
                             <p v-if="viewMode" class="mb-3">{{ nuoText }}</p>
                             <div v-else class="mr-5 mt-3">
                                 <el-radio v-model="radioNuo"
@@ -190,8 +190,8 @@
                              @rowClick="rowClick"/>
                 </div>
             </div>
-            <div class="flc width-4" v-if="!creationMode">
-                <div class="flr justify-sb">
+            <div class="fl-сol width-4" v-if="!creationMode">
+                <div class="fl-row justify-sb">
                     <h4>Информация по ЭКГ</h4>
                     <n-button
                         class="mr-0"

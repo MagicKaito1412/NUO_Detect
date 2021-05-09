@@ -5,7 +5,7 @@
                 <div class="modal-container modal-dialog" :class="sizeClass">
                     <div class="pn-form">
                         <div class="pn-form-heading">
-                            <div class="pn-form-heading__inner flr justify-c align-c">
+                            <div class="pn-form-heading__inner fl-row justify-c align-c">
                                 <h3>{{ title }}</h3>
                                 <i class="material-icons close-icon"
                                    @click="close"

@@ -5,7 +5,7 @@
               @close="close"
               class="change-pass-dialog"
               ref="dialog">
-        <div class="flc">
+        <div class="fl-сol">
             <n-input
                 label="Старый пароль"
                 :password="true"

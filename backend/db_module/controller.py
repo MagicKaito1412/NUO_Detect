@@ -114,6 +114,12 @@ def get_patients():
     return jsonify(result)
 
 
+@app.route('/get_stat', methods=['GET'])
+def get_stat():
+    result = service.get_stat()
+    return jsonify(result)
+
+
 @app.route('/get_patient/<int:patient_id>', methods=['GET'])
 def get_patient(patient_id):
     result = service.get_patient(patient_id)

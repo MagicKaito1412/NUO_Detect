@@ -3,7 +3,7 @@
         <main-wrapper :login="true">
             <div class="wrapper-window">
                 <div class="login-window">
-                    <div class="flr justify-c">
+                    <div class="fl-row justify-c">
                         <h4 class="ma-3">АВТОРИЗАЦИЯ</h4>
                     </div>
                     <divider/>

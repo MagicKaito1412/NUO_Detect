@@ -6,6 +6,7 @@ import moment from "moment";
 import GlobalLibPlugin from './global/global-lib-plugin'
 import '@/assets/scss/index.scss';
 import VueTheMask from 'vue-the-mask'
+import VueGraph from 'vue-graph'
 
 Vue.config.productionTip = false
 moment.locale("ru");
@@ -15,6 +16,7 @@ Vue.use(GlobalLibPlugin, {
     router: router
 });
 Vue.use(VueTheMask)
+Vue.use(VueGraph)
 
 const app = new Vue({
     render: h => h(App),

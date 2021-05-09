@@ -264,6 +264,21 @@ def get_doctors(conn, cur, filters):
 
 
 @db_transaction
+def get_patients_from_db(conn, cur):
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT * "
+        "FROM patients"
+        ") data"
+    )
+    data = []
+    for d in cur:
+        data.append(d[0])
+    return data
+
+
+@db_transaction
 def get_all_patients(conn, cur):
     cols = (
         'patient_id', 'first_name', 'last_name', 'middle_name', 'age', 'policy_num',
@@ -292,6 +307,65 @@ def get_patient(conn, cur, patient_id):
         ") data"
     )
     data = cur.fetchone()[0]
+    return data
+
+
+def get_stat():
+    patients = get_patients_from_db()
+    data = {}
+    gender_count_values = {
+        'men': 0,
+        'women': 0
+    }
+    gender_ages_values = {
+        'men': [0, 0, 0],
+        'women': [0, 0, 0]
+    }
+    # todo add fucking bmi
+    # bmi_values = {
+    #     'value_16_18': 0,
+    #     'value_19_25': 0,
+    #     'value_26_30': 0,
+    #     'value_31_35': 0,
+    #     'value_36_40': 0,
+    #     'value_41': 0
+    # }
+    nuo_values = {
+        'has_nuo': 0,
+        'has_not_nuo': 0
+    }
+
+    for patient in patients:
+        if 18 <= patient.get('age') <= 44:
+            if patient.get('gender') == 1:
+                gender_count_values['men'] += 1
+                gender_ages_values['men'][0] += 1
+            if patient.get('gender') == 2:
+                gender_count_values['women'] += 1
+                gender_ages_values['women'][0] += 1
+        if 45 <= patient.get('age') <= 64:
+            if patient.get('gender') == 1:
+                gender_count_values['men'] += 1
+                gender_ages_values['men'][1] += 1
+            if patient.get('gender') == 2:
+                gender_count_values['women'] += 1
+                gender_ages_values['women'][1] += 1
+        if patient.get('age') >= 65:
+            if patient.get('gender') == 1:
+                gender_count_values['men'] += 1
+                gender_ages_values['men'][2] += 1
+            if patient.get('gender') == 2:
+                gender_count_values['women'] += 1
+                gender_ages_values['women'][2] += 1
+
+        if patient.get('has_nuo') == 1:
+            nuo_values['has_nuo'] += 1
+        if patient.get('has_nuo') == 0:
+            nuo_values['has_not_nuo'] += 1
+
+    data['genderCountValues'] = gender_count_values
+    data['genderAgesValues'] = gender_ages_values
+    data['nuoValues'] = nuo_values
     return data
 
 

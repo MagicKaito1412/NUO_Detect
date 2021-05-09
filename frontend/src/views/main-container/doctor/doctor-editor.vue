@@ -1,6 +1,6 @@
 <template>
     <n-dialog :visible="visible" :title="title" @close="close" class="doctor-editor">
-        <div class="flc justify-sb">
+        <div class="fl-сol justify-sb">
             <n-input
                 :value.sync="doctor.last_name"
                 @keyup.enter.native.prevent="save"
@@ -35,7 +35,7 @@
                 label="E-mail"
             />
         </div>
-        <div class="primary-button flr justify-c mt-3">
+        <div class="primary-button fl-row justify-c mt-3">
             <n-button
                 @click="save"
                 label="Сохранить"/>

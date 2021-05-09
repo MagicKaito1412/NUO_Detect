@@ -1,7 +1,7 @@
 <template>
-    <div class="flr">
+    <div class="fl-row">
         <img class="avatar" src="@/assets/doc.png"/>
-        <div class="flc justify-sb" style="margin-right: 150px;">
+        <div class="fl-сol justify-sb" style="margin-right: 150px;">
             <h3 class="mt-0 mb-7">Личная информация</h3>
             <n-input
                 :value.sync="doctor.last_name"
@@ -43,7 +43,7 @@
                 label="E-mail"
             />
         </div>
-        <div class="flc width-2">
+        <div class="fl-сol width-2">
             <template v-if="!editMode">
                 <n-button
                     @click="edit"

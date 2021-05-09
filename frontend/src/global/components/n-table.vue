@@ -2,7 +2,7 @@
     <div>
         <div class="pa-3 flс mb-10 soft-border" v-if="showFilters">
             <slot name="default"/>
-            <div class="mt-5 flr">
+            <div class="mt-5 fl-row">
                 <n-button
                     v-if="showReloadButton"
                     @click="$emit('reloadData')"

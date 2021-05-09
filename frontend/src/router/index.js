@@ -10,6 +10,7 @@ const Doctor = () => import('../views/main-container/doctor/doctor');
 const Patients = () => import('../views/main-container/patient/patients');
 const Patient = () => import('../views/main-container/patient/patient');
 const Ekg = () => import('../views/main-container/ekg/ekg');
+const Statistics = () => import('../views/main-container/statistics');
 
 Vue.use(Router);
 
@@ -56,6 +57,10 @@ const ROUTES = [
                         path: 'ekg',
                         name: 'ekg',
                         component: Ekg,
+                    }, {
+                        path: 'statistics',
+                        name: 'statistics',
+                        component: Statistics,
                     },
                 ]
             },
