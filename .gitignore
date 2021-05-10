@@ -132,6 +132,6 @@ dmypy.json
 
 .vscode/
 
-backend/models/
+backend/models/*
 
 metrics.txt
