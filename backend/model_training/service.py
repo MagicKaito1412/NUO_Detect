@@ -23,14 +23,14 @@ def train():
     model_svm.fit(X_scaled, y)
     save_models()
 
-    # with open(f"{app.config['MODELS_PATH']}/svm.pkl", 'wb') as f:
-    #     pkl.dump(model_svm, f)
-    # with open(f"{app.config['MODELS_PATH']}/forest.pkl", 'wb') as f:
-    #     pkl.dump(model_forest, f)
-    # with open(f"{app.config['MODELS_PATH']}/logreg.pkl", 'wb') as f:
-    #     pkl.dump(model_logreg, f)
-    # with open(f"{app.config['MODELS_PATH']}/scaler.pkl", 'wb') as f:
-    #     pkl.dump(scaler, f)
+    with open(f"{app.config['MODELS_PATH']}/svm.pkl", 'wb') as f:
+        pkl.dump(model_svm, f)
+    with open(f"{app.config['MODELS_PATH']}/forest.pkl", 'wb') as f:
+        pkl.dump(model_forest, f)
+    with open(f"{app.config['MODELS_PATH']}/logreg.pkl", 'wb') as f:
+        pkl.dump(model_logreg, f)
+    with open(f"{app.config['MODELS_PATH']}/scaler.pkl", 'wb') as f:
+        pkl.dump(scaler, f)
 
 
 def calc_sens_spec():
