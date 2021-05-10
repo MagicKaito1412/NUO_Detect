@@ -51,7 +51,7 @@ def get_sens_spec():
         with open('metrics.txt', 'r') as f:
             for line in f:
                 k, v = line.strip().split('\t')
-                metrics[k] = v
+                metrics[k] = np.round(float(v), 2)
         return metrics
     except FileNotFoundError:
         return False
