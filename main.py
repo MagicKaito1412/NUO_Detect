@@ -11,7 +11,8 @@ if __name__ == '__main__':
     flask_apps = [
         'backend/db_module/run.py runserver',
         'backend/model_training/run.py',
-        'backend/nuo_prediction/run.py'
+        'backend/nuo_prediction/run.py',
+        'backend/form_report/run.py',
     ]
     queues = []
     processes = []

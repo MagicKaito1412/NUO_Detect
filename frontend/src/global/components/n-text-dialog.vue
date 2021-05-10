@@ -7,7 +7,7 @@
               class="n-text-dialog">
         <div class="fl-row justify-c">
             <n-button
-                label="Принять"
+                :label="buttonLabel"
                 @click="close"/>
         </div>
     </n-dialog>
@@ -24,6 +24,10 @@ export default {
         text: {
             type: String,
             default: ''
+        },
+        buttonLabel: {
+            type: String,
+            default: 'Ок'
         }
     },
     methods: {

@@ -94,7 +94,7 @@ export default {
             this.$store.commit('SET_PROGRESS', true)
             ModelTrainService.train().then(() => {
                 this.showSMessage('Обучение моделей успешно завершено')
-                //todo mb this.goTo('statistics')
+                ModelTrainService.calcSensSpec()
             }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
                 this.close()
@@ -104,7 +104,6 @@ export default {
             this.$set(this, 'showTrainDialog', false)
         },
         logout() {
-            //todo add back
             this.goTo('login')
             this.$store.commit('LOGOUT')
         },

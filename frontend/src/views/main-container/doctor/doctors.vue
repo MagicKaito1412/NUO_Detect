@@ -2,8 +2,6 @@
     <div>
         <h3>Врачи, зарегистрированные в системе</h3>
         <n-table :tableData="tableData" :columns="columns"
-                 :with-checkbox="true"
-                 @handleSelectionChange="handleSelectionChange"
                  @rowClick="rowClick"
                  @reloadData="reloadData">
             <div class="fl-row mb-2 justify-sb">
@@ -25,12 +23,6 @@
                     :disabled="disableClearButton"
                     @click="resetSearchOptions"
                     label="Очистить"
-                />
-                <n-button
-                    :disabled="disableRemoveButton"
-                    type="error"
-                    @click="removeList"
-                    label="Удалить из системы"
                 />
             </template>
         </n-table>
@@ -59,7 +51,6 @@ export default {
             showDialog: false,
             showLoginDialog: false,
             createMode: false,
-            checked: [],
             newUserLogin: null
         }
     },
@@ -95,12 +86,6 @@ export default {
         resetSearchOptions() {
             this.$set(this, 'searchOptions', {})
         },
-        handleSelectionChange(checked) {
-            this.$set(this, 'checked', checked)
-        },
-        removeList() {
-            //todo after back
-        }
     },
     computed: {
         columns() {
@@ -110,9 +95,6 @@ export default {
             return !this.searchOptions.last_name
             && !this.searchOptions.first_name
             && !this.searchOptions.middle_name
-        },
-        disableRemoveButton() {
-            return !this.checked || !this.checked.length
         },
         loginDialogText() {
             if (this.newUserLogin) {

@@ -7,6 +7,10 @@ export default {
     },
 
     calcSensSpec() {
-        return axios.post(`${TRAIN_LOCALHOST}/calc_sens_spec`)
+        return axios.get(`${TRAIN_LOCALHOST}/calc_sens_spec`)
+    },
+
+    getSensSpec() {
+        return axios.get(`${TRAIN_LOCALHOST}/get_sens_spec`)
     },
 }

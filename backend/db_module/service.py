@@ -334,6 +334,11 @@ def get_stat():
         'men': [0, 0, 0],
         'women': [0, 0, 0]
     }
+
+    gender_nuo_values = {
+        'men': [0, 0],
+        'women': [0, 0]
+    }
     # todo add fucking bmi
     # bmi_values = {
     #     'value_16_18': 0,
@@ -349,35 +354,32 @@ def get_stat():
     }
 
     for patient in patients:
+        gender = 'undefined'
+        if patient.get('gender') == 1:
+            gender = 'men'
+        if patient.get('gender') == 2:
+            gender = 'women'
+
+        gender_count_values[gender] += 1
+
         if 18 <= patient.get('age') <= 44:
-            if patient.get('gender') == 1:
-                gender_count_values['men'] += 1
-                gender_ages_values['men'][0] += 1
-            if patient.get('gender') == 2:
-                gender_count_values['women'] += 1
-                gender_ages_values['women'][0] += 1
+            gender_ages_values[gender][0] += 1
         if 45 <= patient.get('age') <= 64:
-            if patient.get('gender') == 1:
-                gender_count_values['men'] += 1
-                gender_ages_values['men'][1] += 1
-            if patient.get('gender') == 2:
-                gender_count_values['women'] += 1
-                gender_ages_values['women'][1] += 1
+            gender_ages_values[gender][1] += 1
         if patient.get('age') >= 65:
-            if patient.get('gender') == 1:
-                gender_count_values['men'] += 1
-                gender_ages_values['men'][2] += 1
-            if patient.get('gender') == 2:
-                gender_count_values['women'] += 1
-                gender_ages_values['women'][2] += 1
+            gender_ages_values[gender][2] += 1
 
         if patient.get('has_nuo') == 1:
             nuo_values['has_nuo'] += 1
+            gender_nuo_values[gender][0] += 1
+
         if patient.get('has_nuo') == 0:
             nuo_values['has_not_nuo'] += 1
+            gender_nuo_values[gender][1] += 1
 
     data['genderCountValues'] = gender_count_values
     data['genderAgesValues'] = gender_ages_values
+    data['genderNuoValues'] = gender_nuo_values
     data['nuoValues'] = nuo_values
     return data
 

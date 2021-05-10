@@ -21,30 +21,6 @@
                     @click="goTo('patients')"
                     label="Вернуться к списку пациентов"
                 />
-                <!--                todo remove later-->
-                <!--                <template v-if="viewMode">-->
-                <!--                    <n-button-->
-                <!--                        @click="edit"-->
-                <!--                        label="Редактировать личные данные"-->
-                <!--                    />-->
-                <!--                </template>-->
-                <!--                <template v-else-if="!creationMode">-->
-                <!--                    <n-button-->
-                <!--                        @click="save"-->
-                <!--                        label="Сохранить"-->
-                <!--                    />-->
-                <!--                    <n-button-->
-                <!--                        @click="cancel"-->
-                <!--                        label="Отменить"-->
-                <!--                    />-->
-                <!--                </template>-->
-                <!--                <n-button-->
-                <!--                    class="mr-0"-->
-                <!--                    :disabled="!viewMode"-->
-                <!--                    @click="addEkg"-->
-                <!--                    label="Добавить данные ЭКГ"-->
-                <!--                    v-if="!creationMode"-->
-                <!--                />-->
             </div>
         </div>
         <divider/>
@@ -53,11 +29,16 @@
                 <div class="fl-row justify-sb">
                     <h4>Личная информация</h4>
                     <template v-if="fromDoctor">
-                        <n-button class="mr-0"
-                                  @click="edit"
-                                  v-if="viewMode"
-                                  label="Редактировать"
-                        />
+                        <div class="fl-row" v-if="viewMode">
+                            <n-button
+                                @click="showLogin"
+                                label="Показать логин"
+                            />
+                            <n-button class="mr-0"
+                                      @click="edit"
+                                      label="Редактировать"
+                            />
+                        </div>
                         <div class="fl-row" v-else>
                             <n-button
                                 @click="save"
@@ -164,7 +145,7 @@
                             </p>
                         </div>
                         <div class="fl-сol mr-3">
-                            <p v-if="viewMode" class="mb-3">{{ nuoText }}</p>
+                            <p v-if="viewMode" class="mb-3" style="font-weight: bold">{{ nuoText }}</p>
                             <div v-else class="mr-5 mt-3">
                                 <el-radio v-model="radioNuo"
                                           class="mr-2"
@@ -183,11 +164,6 @@
                             </div>
                         </div>
                     </div>
-                    <n-table v-if="showProbs && fromDoctor"
-                             :tableData="fullTableData"
-                             :columns="fullTableColumns"
-                             :showFilters="false"
-                             @rowClick="rowClick"/>
                 </div>
             </div>
             <div class="fl-сol width-4" v-if="!creationMode">
@@ -207,6 +183,44 @@
                          @rowClick="rowClick"/>
             </div>
         </div>
+        <template v-if="showProbs && fromDoctor">
+            <div class="fl-row mt-5 mb-5 justify-sb">
+                <graph-line
+                    v-if="ekgProbsValues"
+                    :width="930"
+                    :height="300"
+                    shape="normal"
+                    :axis-min="0"
+                    :axis-max="1"
+                    :axis-full-mode="true"
+                    :labels="ekgLabels"
+                    :names="ekgProbsNames"
+                    :values="ekgProbsValues">
+                    <note text="График вероятностей"></note>
+                    <tooltip :names="ekgProbsNames" :position="'right'"></tooltip>
+                    <legends :names="ekgProbsNames"></legends>
+                    <guideline :tooltip-y="true"></guideline>
+                </graph-line>
+                <graph-bar
+                    v-if="probsValues"
+                    :width="500"
+                    :height="300"
+                    :axis-min="0"
+                    :axis-max="1"
+                    :bar-margin="10"
+                    :bar-padding="5"
+                    :labels="ekgProbsNames"
+                    :values="probsValues">
+                    <note text="Метрики моделей"></note>
+                    <tooltip :names="probsNames" :position="'center'"></tooltip>
+                    <legends :names="probsNames" :filter="true"></legends>
+                </graph-bar>
+            </div>
+            <n-table :tableData="fullTableData"
+                     :columns="fullTableColumns"
+                     :showFilters="false"
+                     @rowClick="rowClick"/>
+        </template>
         <change-pass-dialog :visible.sync="showDialog"/>
         <n-text-dialog :visible.sync="showLoginDialog"
                        :text="loginDialogText"/>
@@ -217,7 +231,13 @@
 import PatientService from './patient-service'
 import ReportService from '../../service/report-service'
 import EkgService from '../ekg/ekg-service'
-import {EKGS_TABLE_HEADERS, POLICY_PATTERN, PROBS_EKGS_TABLE_HEADERS, TELEPHONE_PATTERN} from "../../service/constants"
+import ModelTrainService from '../../service/model-train-service'
+import {
+    EKGS_TABLE_HEADERS,
+    POLICY_PATTERN,
+    PROBS_EKGS_TABLE_HEADERS,
+    TELEPHONE_PATTERN
+} from "../../service/constants"
 import {Patient} from "../../service/models";
 import ChangePassDialog from "../change-pass-dialog";
 import UserService from "../../service/user-service";
@@ -236,7 +256,12 @@ export default {
             radioGender: null, // 1-М, 2-Ж
             showDialog: false,
             showLoginDialog: false,
-            newUserLogin: null
+            newUserLogin: null,
+            ekgProbsNames: ['Log Reg', 'Random Forest', 'SVM'],
+            probsNames: ['F1', 'Чувствительность', 'Специфичность'],
+            ekgLabels: [],
+            ekgProbsValues: null,
+            probsValues: null,
         }
     },
     methods: {
@@ -280,12 +305,7 @@ export default {
                     this.$set(this, 'patient', result.data);
                     this.showSMessage()
                     this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result.data))
-                    UserService.getUserById(result.data.user_id).then(userResponse => {
-                            if (userResponse && userResponse.data && userResponse.data.login) {
-                                this.$set(this, 'showLoginDialog', true);
-                                this.$set(this, 'newUserLogin', userResponse.data.login);
-                            }
-                        })
+                    this.showLogin()
                 }).finally(() => {
                     this.$store.commit('SET_PROGRESS', false)
                 })
@@ -309,11 +329,17 @@ export default {
             }
         },
         predict() {
+            if (!this.tableData.length) {
+                this.showEMessage('Для расчета вероятностей необходимо хотя бы одно измерение ЭКГ')
+                return
+            }
             this.$store.commit('SET_PROGRESS', true)
             PatientService.predict(this.patient.patient_id).then(result => {
-                if (result) {
+                if (result && result.data === 'OK') {
                     this.$set(this.patient, 'has_probs', true)
                     this.showSMessage('Вероятности успешно расчитаны')
+                } else {
+                    this.showEMessage('Для расчета вероятностей необходимо обучить модели')
                 }
             }).finally(() => {
                 this.$store.commit('SET_PROGRESS', false)
@@ -387,6 +413,74 @@ export default {
         },
         changePass() {
             this.$set(this, 'showDialog', true)
+        },
+        showLogin() {
+            if (!this.patient || !this.patient.user_id) {
+                this.showEMessage('Ошибка данных пользователя')
+                return
+            }
+            this.$store.commit('SET_PROGRESS', true)
+            UserService.getUserById(this.patient.user_id).then(userResponse => {
+                if (userResponse && userResponse.data && userResponse.data.login) {
+                    this.$set(this, 'showLoginDialog', true);
+                    this.$set(this, 'newUserLogin', userResponse.data.login);
+                }
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
+            })
+        },
+        fillEkgProbValues(ekgs) {
+            let tempLogReg = new Array(ekgs.length)
+            let tempRndForest = new Array(ekgs.length)
+            let tempSvm = new Array(ekgs.length)
+            for (const [idx, item] of ekgs.entries()) {
+                this.ekgLabels.push(`${idx + 1}`)
+                tempLogReg[idx] = item.prob_log_reg
+                tempRndForest[idx] = item.prob_rnd_forest
+                tempSvm[idx] = item.prob_log_svm
+            }
+            this.ekgProbsValues = new Array(3)
+            this.ekgProbsValues[0] = tempLogReg
+            this.ekgProbsValues[1] = tempRndForest
+            this.ekgProbsValues[2] = tempSvm
+        },
+        fillProbValues() {
+            this.$store.commit('SET_PROGRESS', true)
+            ModelTrainService.getSensSpec().then(result => {
+                if (!result) {
+                    return
+                }
+                if (result && result.data === 'NOT OK') {
+                    this.showEMessage('Для расчета метрик моделей необходимо сначала их обучить')
+                    return
+                }
+                if (result && result.data) {
+                    let metrics = result.data
+
+                    let tempLogReg = new Array(3)
+                    let tempRndForest = new Array(3)
+                    let tempSvm = new Array(3)
+
+                    tempLogReg[0] = metrics.logreg_f1
+                    tempLogReg[1] = metrics.logreg_sensitivity
+                    tempLogReg[2] = metrics.logreg_specificity
+
+                    tempRndForest[0] = metrics.forest_f1
+                    tempRndForest[1] = metrics.forest_sensitivity
+                    tempRndForest[2] = metrics.forest_specificity
+
+                    tempSvm[0] = metrics.svm_f1
+                    tempSvm[1] = metrics.svm_sensitivity
+                    tempSvm[2] = metrics.svm_specificity
+
+                    this.$set(this, 'probsValues', [])
+                    this.probsValues[0] = tempLogReg
+                    this.probsValues[1] = tempRndForest
+                    this.probsValues[2] = tempSvm
+                }
+            }).finally(() => {
+                this.$store.commit('SET_PROGRESS', false)
+            })
         }
     },
     computed: {
@@ -465,6 +559,8 @@ export default {
                 EkgService.loadEkgs(this.patient.patient_id).then(result => {
                     if (result) {
                         this.$set(this, 'fullTableData', result.data)
+                        this.fillEkgProbValues(this.fullTableData)
+                        this.fillProbValues()
                     }
                 }).finally(() => {
                     this.$store.commit('SET_PROGRESS', false)
