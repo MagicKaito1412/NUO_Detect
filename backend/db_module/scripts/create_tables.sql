@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.patients
     has_nuo     integer,
     telephone   character varying(19),
     has_probs   boolean,
+    bmi         real                                               NOT NULL,
     CONSTRAINT patients_pkey PRIMARY KEY (patient_id),
     CONSTRAINT patients_user_id_key UNIQUE (user_id),
     CONSTRAINT patients_policy_num_key UNIQUE (policy_num),

@@ -67,6 +67,7 @@ def export_csv(conn, cur, file):
                 'weight': row[WEIGHT],
                 'height': row[HEIGHT],
                 'has_nuo': -1,
+                'bmi': row[WEIGHT] / ((row[HEIGHT] / 100)**2)
                 # 'prob_log_reg': -1,
                 # 'prob_rnd_forest': -1,
                 # 'prob_log_svm': -1
@@ -172,6 +173,10 @@ def insert_patient(conn, cur, patient_data):
 
 @db_transaction
 def insert_doctor(conn, cur, doctor_data):
+    for k, v in doctor_data.items():
+        if not v:
+            doctor_data[k] = None
+
     cur.execute("SELECT nextval(pg_get_serial_sequence('users', 'user_id'))")
     user_id = cur.fetchone()[0]
 
@@ -203,6 +208,10 @@ def insert_doctor(conn, cur, doctor_data):
 
 @db_transaction
 def update_doctor(conn, cur, doctor_data):
+    for k, v in doctor_data.items():
+        if not v:
+            doctor_data[k] = None
+
     doctor_id = doctor_data.pop('doctor_id')
     subquery = ', '.join([f'{k}=%s' for k in doctor_data.keys()])
     cur.execute(
@@ -248,6 +257,9 @@ def get_doctors(conn, cur, filters):
     )
     if not filters:
         filters = dict(first_name="")
+    for k, v in filters.items():
+        if v is None:
+            filters[k] = ""
     subquery_in = [f"POSITION('{value.lower()}' IN LOWER(doctors.{col})) = 1" for col, value in filters.items()]
     cur.execute(
         "SELECT row_to_json(data) FROM "
@@ -268,7 +280,7 @@ def get_patients_from_db(conn, cur):
     cur.execute(
         "SELECT row_to_json(data) FROM "
         "("
-        f"SELECT * "
+        "SELECT * "
         "FROM patients"
         ") data"
     )
@@ -404,6 +416,9 @@ def get_patients(conn, cur, filters):
     )
     if not filters:
         filters = dict(first_name="")
+    for k, v in filters.items():
+        if v is None:
+            filters[k] = ""
     subquery_in = [f"POSITION('{value.lower()}' IN LOWER(patients.{col})) = 1" for col, value in filters.items()]
     cur.execute(
         "SELECT row_to_json(data) FROM "
@@ -430,6 +445,7 @@ def get_patient_ekgs(conn, cur, patient_id):
         f"SELECT ekg_id, TO_CHAR(registry_date, 'DD.MM.YYYY HH:MI') as registry_date, "
         f"prob_log_reg, prob_rnd_forest, prob_rnd_forest, prob_log_svm "
         f"FROM ekgs WHERE ekgs.patient_id = {patient_id} "
+        "ORDER BY registry_date"
         ") data"
     )
     data = []

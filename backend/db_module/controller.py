@@ -110,6 +110,7 @@ def get_all_patients():
 @app.route('/get_patients', methods=['POST'])
 def get_patients():
     filters = request.get_json()
+    print(filters)
     result = service.get_patients(filters)
     return jsonify(result)
 

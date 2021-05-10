@@ -33,6 +33,8 @@ def get_predict_patient_ekg(conn, cur, patient_id):
 
 
 def predict(patient_id):
+    if not model_logreg or not model_forest or not model_svm:
+        return False
     data = get_predict_patient_ekg(patient_id)
     X, y = get_X_y(data, useless_cols=DB_EKG_USELESS_COLS)
 
@@ -55,3 +57,4 @@ def predict(patient_id):
             'ekg_id': val['ekg_id'],
         }
         requests.post(url='http://127.0.0.1:5000/update_ekg', json=json_data)
+    return True
