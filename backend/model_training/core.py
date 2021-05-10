@@ -86,7 +86,7 @@ def get_X_y(data, useless_cols=None):
     return X, y
 
 
-def get_sens_spec(data, save_predicts=False):
+def calculate_sens_spec(data, save_predicts=False):
     X, y = get_X_y(data)
 
     patients_num = X[DB_PATIENT_ID].unique()

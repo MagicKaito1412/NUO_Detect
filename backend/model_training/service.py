@@ -4,7 +4,7 @@ import numpy as np
 import pickle as pkl
 
 from backend.model_training.core import (
-    get_train_val, get_X_y, get_sens_spec, get_train_ekg, save_models
+    get_train_val, get_X_y, calculate_sens_spec, get_train_ekg, save_models
 )
 from backend.utils.colnames import DB_EKG_USELESS_COLS
 
@@ -35,5 +35,23 @@ def train():
 
 def calc_sens_spec():
     data = get_train_ekg()
-    metrics = get_sens_spec(data)
+    metrics = calculate_sens_spec(data)
+    with open('metrics.txt', 'w') as f:
+        for k, v in metrics.items():
+            f.write(str(k))
+            f.write('\t')
+            f.write(str(v))
+            f.write('\n')
     return metrics
+
+
+def get_sens_spec():
+    try:
+        metrics = dict()
+        with open('metrics.txt', 'r') as f:
+            for line in f:
+                k, v = line.strip().split('\t')
+                metrics[k] = v
+        return metrics
+    except FileNotFoundError:
+        return False
