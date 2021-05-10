@@ -11,3 +11,4 @@ scikit-learn
 lxml
 docx-mailmerge
 python-docx
+svg2rlg
