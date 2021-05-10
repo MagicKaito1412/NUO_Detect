@@ -21,6 +21,7 @@ if __name__ == '__main__':
         p.start()
 
     while True:
+        time.sleep(0.1)
         try:
             pass
         except Exception as e:
