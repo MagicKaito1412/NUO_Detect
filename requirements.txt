@@ -10,3 +10,4 @@ requests
 scikit-learn
 lxml
 docx-mailmerge
+python-docx

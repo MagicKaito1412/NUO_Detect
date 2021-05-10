@@ -186,6 +186,7 @@
         <template v-if="showProbs && fromDoctor">
             <div class="fl-row mt-5 mb-5 justify-sb">
                 <graph-line
+                    ref="ekg-prob-graph"
                     v-if="ekgProbsValues"
                     :width="930"
                     :height="300"
@@ -383,8 +384,13 @@ export default {
                 ekgs: ekgs
             }
 
-            if (this.fromDoctor) { //mb add pictures
+            if (this.fromDoctor) {
                 this.$store.commit('SET_PROGRESS', true)
+                let ekgGraph = this.$refs['ekg-prob-graph']
+                if (ekgGraph) {
+                    let svg = ekgGraph.chart.svg
+                    data['svg'] = svg.toDataURI()
+                }
                 ReportService.createDocReport(data).then(result => {
                     if (result) {
                         let filename = result.data
