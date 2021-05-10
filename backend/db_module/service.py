@@ -160,6 +160,7 @@ def insert_patient(conn, cur, patient_data):
     cur.execute("SELECT nextval(pg_get_serial_sequence('patients', 'patient_id'))")
     patient_id = cur.fetchone()[0]
 
+    patient_data['bmi'] = patient_data['weight'] / ((patient_data['height'] / 100)**2)
     patient_data['patient_id'] = patient_id
     patient_data['user_id'] = user_id
     cur.execute(
