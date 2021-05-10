@@ -208,6 +208,8 @@
             </div>
         </div>
         <change-pass-dialog :visible.sync="showDialog"/>
+        <n-text-dialog :visible.sync="showLoginDialog"
+                       :text="loginDialogText"/>
     </div>
 </template>
 
@@ -218,6 +220,7 @@ import EkgService from '../ekg/ekg-service'
 import {EKGS_TABLE_HEADERS, POLICY_PATTERN, PROBS_EKGS_TABLE_HEADERS, TELEPHONE_PATTERN} from "../../service/constants"
 import {Patient} from "../../service/models";
 import ChangePassDialog from "../change-pass-dialog";
+import UserService from "../../service/user-service";
 
 export default {
     name: "patient",
@@ -231,7 +234,9 @@ export default {
             creationMode: false,
             radioNuo: '-1',
             radioGender: null, // 1-М, 2-Ж
-            showDialog: false
+            showDialog: false,
+            showLoginDialog: false,
+            newUserLogin: null
         }
     },
     methods: {
@@ -275,6 +280,12 @@ export default {
                     this.$set(this, 'patient', result.data);
                     this.showSMessage()
                     this.$store.commit('SET_SELECTED_PATIENT', Object.assign({}, result.data))
+                    UserService.getUserById(result.data.user_id).then(userResponse => {
+                            if (userResponse && userResponse.data && userResponse.data.login) {
+                                this.$set(this, 'showLoginDialog', true);
+                                this.$set(this, 'newUserLogin', userResponse.data.login);
+                            }
+                        })
                 }).finally(() => {
                     this.$store.commit('SET_PROGRESS', false)
                 })
@@ -439,6 +450,12 @@ export default {
         },
         predictButton() {
             return this.showProbs ? 'Обновить расчеты вероятностей' : 'Расчитать вероятность НУО'
+        },
+        loginDialogText() {
+            if (this.newUserLogin) {
+                return `Для пользователя зарегистирован логин: ${this.newUserLogin}`
+            }
+            return ''
         }
     },
     watch: {

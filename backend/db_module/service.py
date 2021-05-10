@@ -384,6 +384,20 @@ def get_doctor(conn, cur, doctor_id):
 
 
 @db_transaction
+def get_user_by_id(conn, cur, user_id):
+    cur.execute(
+        "SELECT row_to_json(data) FROM "
+        "("
+        f"SELECT * "
+        "FROM users "
+        f"WHERE users.user_id = {user_id} "
+        ") data"
+    )
+    data = cur.fetchone()[0]
+    return data
+
+
+@db_transaction
 def get_patients(conn, cur, filters):
     cols = (
         'patient_id', 'first_name', 'last_name', 'middle_name', 'gender', 'age', 'policy_num',

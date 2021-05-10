@@ -94,6 +94,7 @@ export default {
                 border-left: 1px solid $--color-info-light;
                 border-top: 1px solid $--color-info-light;
                 padding: 7px;
+                min-height: 25px;
             }
         }
 

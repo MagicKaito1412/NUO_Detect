@@ -29,7 +29,7 @@
 
 <script>
 import {User} from "../service/models";
-import LoginService from '../service/login-service';
+import UserService from '../service/user-service';
 
 export default {
     name: "home",
@@ -42,11 +42,11 @@ export default {
         loginClick() {
             if (this.user.login && this.user.password) {
                 this.$store.commit('SET_PROGRESS', true)
-                LoginService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
+                UserService.getUserByLoginPassword(this.user.login, this.user.password).then(result => {
                     if (result && result.data) {
                         let authUser = result.data
                         this.$store.commit('SET_AUTH_USER', authUser)
-                        LoginService.getEntityByUser(authUser).then(entity => {
+                        UserService.getEntityByUser(authUser).then(entity => {
                             if (entity) {
                                 this.$store.commit('SET_AUTH_ENTITY', entity.data)
                                 let changePass = false

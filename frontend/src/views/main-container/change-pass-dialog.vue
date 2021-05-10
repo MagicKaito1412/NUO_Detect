@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import LoginService from '../service/login-service'
+import UserService from '../service/user-service'
 
 export default {
     name: "change-pass-dialog",
@@ -86,7 +86,7 @@ export default {
             }
             user.password = this.newPass
             this.$store.commit('SET_PROGRESS', true)
-            LoginService.changePassword(user).then(() => {
+            UserService.changePassword(user).then(() => {
                 this.showSMessage()
                 this.$emit('saveButton')
                 this.$store.commit('SET_AUTH_USER', user)

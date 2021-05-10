@@ -11,7 +11,7 @@
                                    @click="close"
                                    v-if="showCloseIcon">close</i>
                             </div>
-                            <divider/>
+                            <divider v-if="showDivider"/>
                         </div>
                         <div class="pn-form-inner">
                             <slot name="default"/>
@@ -45,7 +45,11 @@ export default {
         showCloseIcon: {
             type: Boolean,
             default: true
-        }
+        },
+        showDivider: {
+            type: Boolean,
+            default: true
+        },
     },
     methods: {
         close() {

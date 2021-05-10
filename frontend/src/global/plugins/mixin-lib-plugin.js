@@ -1,4 +1,4 @@
-import UtilsMixin from './mixins/utils-mixin'
+import UtilsMixin from '../mixins/utils-mixin'
 
 export default {
     install(Vue) {

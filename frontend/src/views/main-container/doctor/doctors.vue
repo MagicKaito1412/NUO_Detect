@@ -36,7 +36,11 @@
         </n-table>
         <doctor-editor :visible.sync="showDialog"
                        :createMode.sync="createMode"
+                       :showLoginDialog.sync="showLoginDialog"
+                       :newUserLogin.sync="newUserLogin"
                        @reloadData="reloadData"/>
+        <n-text-dialog :visible.sync="showLoginDialog"
+                       :text="loginDialogText"/>
     </div>
 </template>
 
@@ -53,8 +57,10 @@ export default {
             searchOptions: {},
             tableData: [],
             showDialog: false,
+            showLoginDialog: false,
             createMode: false,
-            checked: []
+            checked: [],
+            newUserLogin: null
         }
     },
     methods: {
@@ -104,11 +110,16 @@ export default {
             return !this.searchOptions.last_name
             && !this.searchOptions.first_name
             && !this.searchOptions.middle_name
-            && !this.searchOptions.telephone //todo change to cabinet
         },
         disableRemoveButton() {
             return !this.checked || !this.checked.length
         },
+        loginDialogText() {
+            if (this.newUserLogin) {
+                return `Для пользователя зарегистирован логин: ${this.newUserLogin}`
+            }
+            return ''
+        }
     },
     mounted() {
         this.loadDoctors()

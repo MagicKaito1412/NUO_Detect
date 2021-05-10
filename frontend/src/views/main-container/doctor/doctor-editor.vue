@@ -51,6 +51,7 @@
 <script>
 import {Doctor} from "../../service/models";
 import DoctorService from './doctor-service'
+import UserService from '../../service/user-service'
 import {TELEPHONE_PATTERN} from "../../service/constants";
 
 export default {
@@ -95,8 +96,16 @@ export default {
             }
             if (this.createMode) {
                 this.$store.commit('SET_PROGRESS', true)
-                DoctorService.saveNewDoctor(this.doctor).then(() => {
-                    this.showSMessage()
+                DoctorService.saveNewDoctor(this.doctor).then(result => {
+                    if (result && result.data && result.data.user_id) {
+                        this.showSMessage()
+                        UserService.getUserById(result.data.user_id).then(userResponse => {
+                            if (userResponse && userResponse.data && userResponse.data.login) {
+                                this.$emit('update:newUserLogin', userResponse.data.login)
+                                this.$emit('update:showLoginDialog', true)
+                            }
+                        })
+                    }
                 }).finally(() => {
                     this.close()
                 })

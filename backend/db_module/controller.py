@@ -132,6 +132,12 @@ def get_doctor(doctor_id):
     return jsonify(result)
 
 
+@app.route('/get_user/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    result = service.get_user_by_id(user_id)
+    return jsonify(result)
+
+
 @app.route('/get_user', methods=['POST'])
 def get_user():
     user_data = request.get_json()
