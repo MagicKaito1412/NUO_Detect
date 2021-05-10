@@ -23,8 +23,8 @@ if __name__ == '__main__':
     while True:
         try:
             pass
-        except KeyboardInterrupt:
+        except Exception as e:
             for p in processes:
                 p.terminate()
                 p.join()
-            raise KeyboardInterrupt
+            raise e
