@@ -26,8 +26,13 @@ def download(filename):
 @app.route('/remove/<path:filename>', methods=['GET'])
 def remove(filename):
     uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
-    full_path = f"{uploads}{filename}"
-    if os.path.exists(full_path):
-        os.remove(full_path)
-        return 'OK', 200
-    return 'ALREADY DELETED', 410
+    full_file_path = f"{uploads}{filename}"
+    full_svg_path = f"{uploads}img.svg"
+    full_img_path = f"{uploads}img.jpg"
+    if os.path.exists(full_file_path):
+        os.remove(full_file_path)
+    if os.path.exists(full_svg_path):
+        os.remove(full_svg_path)
+    if os.path.exists(full_img_path):
+        os.remove(full_img_path)
+    return 'OK', 200

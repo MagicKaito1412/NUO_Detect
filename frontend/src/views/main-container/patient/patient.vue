@@ -197,10 +197,8 @@
                     :labels="ekgLabels"
                     :names="ekgProbsNames"
                     :values="ekgProbsValues">
-                    <note text="График вероятностей"></note>
-                    <tooltip :names="ekgProbsNames" :position="'right'"></tooltip>
+                    <note text="Models prediction"></note>
                     <legends :names="ekgProbsNames"></legends>
-                    <guideline :tooltip-y="true"></guideline>
                 </graph-line>
                 <graph-bar
                     v-if="probsValues"

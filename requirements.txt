@@ -10,5 +10,6 @@ requests
 scikit-learn
 lxml
 docx-mailmerge
-python-docx
+docxtpl
+svglib
 svg2rlg
