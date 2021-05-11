@@ -340,14 +340,14 @@ def get_stat():
         'women': [0, 0]
     }
     # todo add fucking bmi
-    # bmi_values = {
-    #     'value_16_18': 0,
-    #     'value_19_25': 0,
-    #     'value_26_30': 0,
-    #     'value_31_35': 0,
-    #     'value_36_40': 0,
-    #     'value_41': 0
-    # }
+    bmi_values = {
+        'value_16_18': 0,
+        'value_19_25': 0,
+        'value_26_30': 0,
+        'value_31_35': 0,
+        'value_36_40': 0,
+        'value_41': 0
+    }
     nuo_values = {
         'has_nuo': 0,
         'has_not_nuo': 0
@@ -377,9 +377,23 @@ def get_stat():
             nuo_values['has_not_nuo'] += 1
             gender_nuo_values[gender][1] += 1
 
+        if 16 <= patient.get('bmi') <= 18:
+            bmi_values['value_16_18'] += 1
+        if 19 <= patient.get('bmi') <= 25:
+            bmi_values['value_19_25'] += 1
+        if 26 <= patient.get('bmi') <= 30:
+            bmi_values['value_26_30'] += 1
+        if 31 <= patient.get('bmi') <= 35:
+            bmi_values['value_31_35'] += 1
+        if 36 <= patient.get('bmi') <= 40:
+            bmi_values['value_36_40'] += 1
+        if patient.get('bmi') > 40:
+            bmi_values['value_41'] += 1
+
     data['genderCountValues'] = gender_count_values
     data['genderAgesValues'] = gender_ages_values
     data['genderNuoValues'] = gender_nuo_values
+    data['bmiValues'] = bmi_values
     data['nuoValues'] = nuo_values
     return data
 

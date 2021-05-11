@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Список пациентов, зарегистрированных в системе</h3>
+        <h3 class="mt-0 mb-10">Список пациентов, зарегистрированных в системе</h3>
         <n-table :tableData="tableData" :columns="columns"
                  @rowClick="rowClick" @reloadData="reloadData">
             <div class="fl-row mb-2 justify-sb">
